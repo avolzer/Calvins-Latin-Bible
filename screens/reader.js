@@ -3,10 +3,11 @@ import { StyleSheet, View, Text } from "react-native";
 import { globalStyles } from '../styles/global';
 
 
-export default function Reader() {
+export default function Reader({route}) {
+    const { chapter } = route.params;
     return (
         <View style={globalStyles.container}>
-            <Text>Reader</Text>
+            <Text>{chapter}</Text>
         </View>
     )
 }

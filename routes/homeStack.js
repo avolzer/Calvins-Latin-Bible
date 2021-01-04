@@ -5,6 +5,8 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 
 import Contents from '../screens/toc'
 import Reader from '../screens/reader'
+import Search from '../screens/search'
+import Header from '../shared/header'
 
 const Stack = createStackNavigator();
 export default function HomeStack( {navigation} ) {
@@ -16,11 +18,17 @@ export default function HomeStack( {navigation} ) {
                 <Stack.Screen
                     name="Calvin's Latin Psalter"
                     component={Contents}
-                    
+                    options={{
+                        headerRight: () =>  <Header navigation={navigation} />
+                    }}
                 />
                 <Stack.Screen
-                    name="Psalm 1"
+                    name="Reader"
                     component={Reader}
+                />
+                <Stack.Screen
+                    name="Search"
+                    component={Search}
                 />
             </Stack.Navigator>
         </NavigationContainer>
