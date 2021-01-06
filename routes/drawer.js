@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import Home from '../routes/homeStack';
 import About from '../routes/aboutStack';
+import Settings from '../routes/settingsStack'
 
 const Drawer = createDrawerNavigator();
 
@@ -14,6 +15,7 @@ export default function App() {
         <Drawer.Navigator initialRouteName="Home">
             <Drawer.Screen name="Contents" component={Home} />
             <Drawer.Screen name="About" component={About} />
+            <Drawer.Screen name="Settings" component={Settings} />
         </Drawer.Navigator>
         </NavigationContainer>
 
