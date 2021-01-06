@@ -2,11 +2,15 @@ import React from 'react';
 import { StyleSheet, View, Text, Button, TouchableOpacity, ScrollView } from "react-native";
 import { globalStyles } from '../styles/global';
 
+import textData from '../assets/csvjson'
+
 export default function Contents( {navigation} ) {
 
     const pressHandler = (ch) => {
+        const chapterText = psalm.filter((item)=> item.Chapter==ch)
         navigation.navigate('Reader', {
             chapter: "chapter " + ch,
+            text: chapterText
         })
     };
 
@@ -26,7 +30,9 @@ export default function Contents( {navigation} ) {
             </View> 
         )
     })
-    
+
+    const psalm = textData.filter((item)=> item.ShortBook == 'PSAL')
+   
 
     return (
         <View style={{padding: 20}}>

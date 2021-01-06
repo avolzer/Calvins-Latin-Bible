@@ -1,14 +1,29 @@
 import React from 'react';
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { globalStyles } from '../styles/global';
 
 
 export default function Reader({route}) {
-    const { chapter } = route.params;
+    const { chapter, text } = route.params;
+
+    console.log(text.length)
+
+   var firstVerse = [];
+    for ( let i = 0; i < text.length; i++){
+        firstVerse.push(
+            <View>
+                <Text>{text[i].Verse}{text[i].Text}</Text>
+            </View>
+            
+        )
+    } 
+
+
     return (
-        <View style={globalStyles.container}>
+        <ScrollView style={globalStyles.container}>
             <Text>{chapter}</Text>
-        </View>
+            {firstVerse}
+        </ScrollView>
     )
 }
 
