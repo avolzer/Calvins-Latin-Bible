@@ -11,7 +11,7 @@ import Header from '../shared/header'
 const Stack = createStackNavigator();
 export default function HomeStack( {navigation} ) {
     return (
-        <NavigationContainer>
+       
             <Stack.Navigator screenOptions={{
                 headerStyle:{backgroundColor:'#ddd'}
             }}>
@@ -31,6 +31,6 @@ export default function HomeStack( {navigation} ) {
                     component={Search}
                 />
             </Stack.Navigator>
-        </NavigationContainer>
+      
     );
 };

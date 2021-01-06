@@ -7,7 +7,6 @@ export default function Reader({route}) {
     const { chapter, text } = route.params;
 
     const fontSize=15
-
     const superFontSize = Math.floor(fontSize * 0.6)
     const superlineHeight = superFontSize * 1.1
 
@@ -17,12 +16,11 @@ export default function Reader({route}) {
        for ( let i = 0; i < text.length; i++){
             firstVerse.push(
             <View key={i}>
-                <Text style={styles.text}>{text[i].Verse + ' '}{text[i].Text}</Text>
+                <Text style={globalStyles.text}>{text[i].Verse + ' '}{text[i].Text}</Text>
             </View>
             
         )
     } 
-
 
     return (
         <ScrollView 
@@ -38,12 +36,5 @@ export default function Reader({route}) {
 const styles = StyleSheet.create ({
     chapterNum: {
         fontSize: 30,
-        
     },
-    text: {
-        fontSize: 20,
-        lineHeight: 35,
-       
-
-    }
 })

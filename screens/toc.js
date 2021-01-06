@@ -36,7 +36,7 @@ export default function Contents( {navigation} ) {
 
     return (
         <View style={{padding: 20}}>
-            <Text>Chapters:</Text>
+            <Text style={globalStyles.subHeading}>Select a chapter</Text>
             <ScrollView
                 showsVerticalScrollIndicator ={false}
             >
