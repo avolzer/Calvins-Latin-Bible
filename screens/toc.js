@@ -9,7 +9,7 @@ export default function Contents( {navigation} ) {
     const pressHandler = (ch) => {
         const chapterText = psalm.filter((item)=> item.Chapter==ch)
         navigation.navigate('Reader', {
-            chapter: "chapter " + ch,
+            chapter: ch,
             text: chapterText
         })
     };
@@ -51,8 +51,8 @@ export default function Contents( {navigation} ) {
 
 const styles=StyleSheet.create({
     button: {
-       padding: 25,
-        margin: 5,
+       padding: 20,
+        margin: 3,
         width: '100%'
         
     },
