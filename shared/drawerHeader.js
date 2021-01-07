@@ -1,21 +1,19 @@
 import React from 'react';
 import { StyleSheet, Text, View} from 'react-native';
-import {EvilIcons } from '@expo/vector-icons';
+import {Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-export default function Header() {
+export default function HomeHeader() {
 
     const navigation = useNavigation();
 
-    const pressHandler = () => {
-        navigation.navigate('Search')
+    const openMenu = () => {
+        navigation.openDrawer();
     }
-
- 
 
     return (
         <View>
-            <EvilIcons name='search' size={28} onPress={pressHandler}/>
+            <Feather name='menu' size={28} onPress={openMenu}/>
         </View>
     );
 };

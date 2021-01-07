@@ -5,7 +5,7 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 
 import Contents from '../screens/toc'
 import About from '../screens/about'
-import Header from '../shared/header'
+import DrawerHeader from '../shared/drawerHeader'
 
 const Stack = createStackNavigator();
 export default function HomeStack( {navigation} ) {
@@ -17,6 +17,9 @@ export default function HomeStack( {navigation} ) {
                 <Stack.Screen
                     name="About"
                     component={About}
+                    options={{
+                        headerLeft: () =>  <DrawerHeader navigation={navigation} />
+                    }}
                    
                 />
                

@@ -10,10 +10,14 @@ import Settings from '../routes/settingsStack'
 const Drawer = createDrawerNavigator();
 
 export default function App() {
+    
     return (
         <NavigationContainer>
         <Drawer.Navigator initialRouteName="Home">
-            <Drawer.Screen name="Contents" component={Home} />
+            <Drawer.Screen 
+                name="Contents" 
+                component={Home}
+                options={{unmountOnBlur:true}} />
             <Drawer.Screen name="About" component={About} />
             <Drawer.Screen name="Settings" component={Settings} />
         </Drawer.Navigator>

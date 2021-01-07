@@ -10,8 +10,6 @@ export default function Reader({route}) {
     const superFontSize = Math.floor(fontSize * 0.6)
     const superlineHeight = superFontSize * 1.1
 
-    console.log(text.length)
-
    var firstVerse = [];
        for ( let i = 0; i < text.length; i++){
             firstVerse.push(
@@ -36,5 +34,6 @@ export default function Reader({route}) {
 const styles = StyleSheet.create ({
     chapterNum: {
         fontSize: 30,
+        
     },
 })
