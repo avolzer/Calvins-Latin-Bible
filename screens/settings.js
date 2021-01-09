@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Picker } from "react-native";
+import { globalStyles } from '../styles/global';
+//import { Picker } from "react-native-picker/picker"
 
 export default function Settings() {
     const [selectedValue, setSelectedValue] = useState("English");
 
     return (
-        <View style={StyleSheet.containter}>
+        <View style={globalStyles.container}>
             <Text>App Language</Text>
             <Picker
                 selectedValue={selectedValue}
@@ -20,9 +22,3 @@ export default function Settings() {
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    containter: {
-        padding: 24
-    }
-});

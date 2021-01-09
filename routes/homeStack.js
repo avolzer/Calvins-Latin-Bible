@@ -33,12 +33,7 @@ export default function HomeStack( {navigation} ) {
                         headerLeft: () =>  <DrawerHeader navigation={navigation} />,
                         headerTitle: headerText()
                     }
-                     }
-                     
-                    // options={
-                    //     global.language=="English"? {title: "Calvin's Latin Psalter"} : {title: "Psalmi Ab Iohanne Calvini"}
-                    // }
-
+                }
                 />
                 <Stack.Screen
                     name="Reader"

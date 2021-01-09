@@ -6,6 +6,8 @@ import textData from '../assets/csvjson'
 
 export default function Contents( {navigation } ) {
 
+    //filter text to get only verses from the selected psalm
+    //navigate to page to read that psalm
     const pressHandler = (ch) => {
         const chapterText = psalms.filter((item)=> item.Chapter==ch)
         navigation.navigate('Reader', {
@@ -27,11 +29,14 @@ export default function Contents( {navigation } ) {
         return roman;
       }
 
+    //array containing consecutive integers for every chapter
     var chapters = [];
     for (var i = 1; i <= 150; i++) {
       chapters.push(i);
     }
 
+    //returns pressable numbers for every chapter
+    //rendered as either roman or arabic numerals depending on selected language
     let chapterButtons = chapters.map((item, index) => {
         return (
             <View 
@@ -44,8 +49,8 @@ export default function Contents( {navigation } ) {
             </View> 
         )
     })
-    //console.log(global.language)
 
+    //filter out all psalms
     const psalms = textData.filter((item)=> item.ShortBook == 'PSAL')
    
     return (
