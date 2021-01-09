@@ -1,34 +1,24 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { StyleSheet, View, Text, ScrollView, Button } from "react-native";
 import { globalStyles } from '../styles/global';
-import { Audio } from 'expo-av';
+//import { Audio } from 'expo-av';
+import MyPlayer from '../shared/audioPlayer'
 
-
-export default function Reader({route}) {
+export default function Reader({route, navigation}) {
     const { chapter, text } = route.params;
 
-    const [sound, setSound] = useState();
+    const playerRef = useRef();
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('blur', () => {
+          playerRef.current.pauseVideo();
+        });
+        return unsubscribe;
+    }, [navigation]);
 
     const fontSize=20
     const superFontSize = Math.floor(fontSize * 0.6)
     const superlineHeight = superFontSize * 1.1
-
-    async function playSound() {
-        const { sound } = await Audio.Sound.createAsync(
-           require('../assets/PSALM-1-TEST.mp3')
-        );
-        setSound(sound);
-        await sound.setRateAsync(1, true);
-
-        await sound.playAsync(); }
-    
-    React.useEffect(() => {
-        return sound
-            ? () => {
-                console.log('Unloading Sound');
-                sound.unloadAsync(); }
-            : undefined;
-    }, [sound]);
 
     const superScript = {
         textAlignVertical: 'top',
@@ -56,15 +46,13 @@ export default function Reader({route}) {
     return (
         <View style={globalStyles.container}>
         <ScrollView 
-            
+            style={styles.scroll}
             showsVerticalScrollIndicator ={false}
         >
             <Text style={styles.chapterNum}>{chapter}</Text>
             {verses}
         </ScrollView>
-        <View style={styles.audio}>
-             <Button title="Play Sound" onPress={playSound} />
-         </View>
+        <MyPlayer playerRef ={playerRef}/>
       </View>
     )
 }
@@ -73,7 +61,8 @@ const styles = StyleSheet.create ({
     chapterNum: {
         fontSize: 30,
     },
-    audio: {
-        padding: 20
+    scroll: {
+        height: '80%'
     }
+
 })
