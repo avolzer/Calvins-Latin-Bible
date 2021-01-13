@@ -8,7 +8,7 @@ export default function HomeHeader() {
     const navigation = useNavigation();
 
     const pressHandler = () => {
-        navigation.navigate('Search')
+        navigation.navigate('Search Bar')
     }
 
     return (

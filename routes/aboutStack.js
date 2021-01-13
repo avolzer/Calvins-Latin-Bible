@@ -12,7 +12,15 @@ export default function HomeStack( {navigation} ) {
     return (
         
             <Stack.Navigator screenOptions={{
-                headerStyle:{backgroundColor:'#ddd'}
+                headerStyle:{
+                    backgroundColor:'white',
+                    elevation: 0,
+                    borderBottomColor: 'black',
+                    borderBottomWidth: 1
+                },
+                headerTitleStyle: {
+                    color: 'black'
+                }
             }}>
                 <Stack.Screen
                     name="About"

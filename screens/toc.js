@@ -44,7 +44,7 @@ export default function Contents( {navigation } ) {
                 style={styles.wrapper}
                 >
                 <TouchableOpacity style={styles.button} onPress={()=>{pressHandler(item)}}>
-                    {global.language=="English" ? <Text>{item}</Text> : <Text>{romanize(item)}</Text>}
+                    {global.language=="English" ? <Text style={{fontFamily: 'serif'}}>{item}</Text> : <Text style={{fontFamily: 'serif'}}>{romanize(item)}</Text>}
                 </TouchableOpacity>
             </View> 
         )
@@ -54,6 +54,7 @@ export default function Contents( {navigation } ) {
     const psalms = textData.filter((item)=> item.ShortBook == 'PSAL')
    
     return (
+        <View style={globalStyles.mainContainer}>
         <View style={{flex:1}}>
             <Text style={[globalStyles.subHeading,
                             {marginLeft: 24, marginTop: 24}]}>
@@ -68,6 +69,7 @@ export default function Contents( {navigation } ) {
                 </View>
             </ScrollView>
            
+        </View>
         </View>
     )
 }

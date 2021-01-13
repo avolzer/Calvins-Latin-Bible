@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, ScrollView, Text } from "react-native";
+import { StyleSheet, ScrollView, Text, View } from "react-native";
 import { globalStyles } from '../styles/global';
 
 export default function About() {
     return (
+        <View style={globalStyles.mainContainer}>
         <ScrollView 
             style={globalStyles.container}
             showsVerticalScrollIndicator ={false}
@@ -26,11 +27,7 @@ export default function About() {
                 this work with as much consistency and expressiveness as the reader could manage.
             </Text>
         </ScrollView>
+        </View>
     )
 }
 
-const styles = StyleSheet.create({
-    containter: {
-        padding: 24
-    }
-});

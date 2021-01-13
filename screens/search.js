@@ -1,24 +1,17 @@
-import React, {useState} from 'react';
-import { StyleSheet, View, Text } from "react-native";
+import React, {useState, useEffect, useRef} from 'react';
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { SearchBar } from 'react-native-elements';
+import { globalStyles } from '../styles/global';
 
-export default function Search() {
 
-    const [search, setSearch] = useState('')
+export default function Search({ navigation }) {
 
     return (
-        <View style={StyleSheet.containter}>
-            <SearchBar round
-            searchIcon={{ size: 24 }}
-            onChangeText={text => console.log(text)} placeholder="Type Here..."
-            value={search}
-            />
+        <View style={globalStyles.mainContainer}>
+            <TouchableOpacity style={{flex:1}} onPress={()=> navigation.pop()}>
+
+            </TouchableOpacity>
         </View>
+        
     )
 }
-
-const styles = StyleSheet.create({
-    containter: {
-        padding: 24
-    }
-});

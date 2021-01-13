@@ -1,14 +1,15 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { Text } from 'react-native'
-
+import { View } from 'react-native'
+import SearchBar from 'react-native-elements'
 
 import Contents from '../screens/toc'
 import Reader from '../screens/reader'
 import Search from '../screens/search'
 import HomeHeader from '../shared/homeHeader'
 import DrawerHeader from '../shared/drawerHeader'
+import SearchHeader from '../shared/searchHeader'
 
 const Stack = createStackNavigator();
 export default function HomeStack( {navigation} ) {
@@ -23,7 +24,19 @@ export default function HomeStack( {navigation} ) {
     return (
        
             <Stack.Navigator screenOptions={{
-                headerStyle:{backgroundColor:'#ddd'}
+                headerStyle:{
+                    backgroundColor:'white',
+                    //elevation: 0,
+                    borderBottomColor: 'black',
+                    height: 120,
+                    //borderBottomWidth: .5
+                },
+                headerTitleStyle: {
+                    color: 'black',
+                    alignSelf: 'center',
+                    fontFamily: 'serif'
+                }
+                
             }}>
                 <Stack.Screen
                     name="Calvin's Latin Psalter"
@@ -33,6 +46,7 @@ export default function HomeStack( {navigation} ) {
                         headerLeft: () =>  <DrawerHeader navigation={navigation} />,
                         headerTitle: headerText()
                     }
+                
                 }
                 />
                 <Stack.Screen
@@ -47,6 +61,17 @@ export default function HomeStack( {navigation} ) {
                 <Stack.Screen
                     name="Search"
                     component={Search}
+                    options={{
+                        headerShown: false
+                    }}
+                />
+                 <Stack.Screen
+                    name="Search Bar"
+                    component={Search}
+                    options={{
+                        headerTitle: ()=> <SearchHeader />
+                    }}
+                   
                 />
             </Stack.Navigator>
       
