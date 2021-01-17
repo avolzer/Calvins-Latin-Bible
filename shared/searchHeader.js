@@ -1,11 +1,11 @@
-import React, {useRef, useEffect} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import { StyleSheet, Text, View, TextInput} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import SearchBar from 'react-native-elements'
 
-export default function SearchHeader() {
+export default function SearchHeader({ navigation }) {
 
-    const navigation = useNavigation();
+    //const navigation = useNavigation();
 
      const searchInput = useRef(null);
 
@@ -13,11 +13,22 @@ export default function SearchHeader() {
 		searchInput.current.focus();    
     }, []);  
 
+    const [value, onChangeText] = useState("")
+
+    const submitEdit =() => {
+        console.log(value)
+        navigation.navigate('Search Bar', {search_term: value})
+    }
+
     return (
         <View style={{width: 500}}>
             <TextInput
             ref={searchInput}
-            style={styles.searchBar}/>
+            style={styles.searchBar}
+            onChangeText={text=> onChangeText(text)}
+            //value={value}
+            onSubmitEditing={submitEdit}
+            />
            
            
             {/* <SearchBar

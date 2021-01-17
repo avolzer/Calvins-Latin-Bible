@@ -69,7 +69,7 @@ export default function HomeStack( {navigation} ) {
                     name="Search Bar"
                     component={Search}
                     options={{
-                        headerTitle: ()=> <SearchHeader />
+                        headerTitle: ()=> <SearchHeader navigation={navigation} />
                     }}
                    
                 />
