@@ -28,7 +28,6 @@ export default function HomeStack( {navigation} ) {
                     backgroundColor:'white',
                     //elevation: 0,
                     borderBottomColor: 'black',
-                    height: 120,
                     //borderBottomWidth: .5
                 },
                 headerTitleStyle: {
@@ -69,6 +68,7 @@ export default function HomeStack( {navigation} ) {
                     name="Search Bar"
                     component={Search}
                     options={{
+                        animationEnabled: false,
                         headerTitle: ()=> <SearchHeader navigation={navigation} />
                     }}
                    

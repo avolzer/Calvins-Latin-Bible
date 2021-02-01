@@ -1,10 +1,16 @@
-import React, {useState, useEffect, useRef} from 'react';
-import { StyleSheet, View, Text, ScrollView, Button } from "react-native";
+import React, {useState, useEffect, useRef, useMemo} from 'react';
+import { StyleSheet, View, Text, FlatList, Button } from "react-native";
 import { globalStyles } from '../styles/global';
 //import { Audio } from 'expo-av';
 import MyPlayer from '../shared/audioPlayer'
+import textData from '../assets/csvjson'
+import { ListItem } from 'react-native-elements';
 
 export default function Reader({route, navigation}) {
+
+    React.memo(function Reader (props) {
+      return false;
+    })
     const { chapter, text } = route.params;
 
     const playerRef = useRef();
@@ -58,27 +64,66 @@ export default function Reader({route, navigation}) {
         return roman;
       }
 
-   var verses = [];
-       for ( let i = 0; i < text.length; i++){
-            verses.push(
-            <View key={i} style={{flexDirection: 'row', alignItems: 'flex-start'}}>
-                {global.language=="English" ? <Text style={superScript}>{text[i].Verse}</Text> : <Text style={superScript}>{romanizeLower(text[i].Verse)}</Text>}
-                <Text style={regular}>{' ' + text[i].Text}</Text>
-            </View>
+  //  var verses = [];
+  //      for ( let i = 0; i < text.length; i++){
+  //           verses.push(
+  //           <View key={i} style={{flexDirection: 'row', alignItems: 'flex-start'}}>
+  //               {global.language=="English" ? <Text style={superScript}>{text[i].Verse}</Text> : <Text style={superScript}>{romanizeLower(text[i].Verse)}</Text>}
+  //               <Text style={regular}>{' ' + text[i].Text}</Text>
+  //           </View>
             
-        )
-    } 
+  //       )
+  //   } 
+
+    const psalms = textData.filter((item)=> item.ShortBook == 'PSAL')
+    const [data, setData] = useState([]);
+    const [current, setCurrent] = useState(0);
+    const [refreshing, setRefreshing] = useState(false);
+    
+
+    const retrieveMore=() => {
+      const verses = []
+      if (refreshing){
+        return null;
+      }
+      console.log("here it is")
+      setRefreshing(true)
+        for ( let i = current; i < current+200; i++){
+            verses.push(
+                psalms[i]
+            )
+            //console.log(psalms[i].Text);
+        } 
+        setData(verses)
+        setCurrent(current+200)
+        setRefreshing(false)
+    };
+
+    //const memoizedValue = useMemo(() => renderItem(), [productsState.product]);
+
+
+    const renderItem = ({ item }) => (
+      <View>
+        <Text>{item.Text}</Text>
+      </View>
+    )
+
 
     return (
         <View style={globalStyles.mainContainer}>
         <View style={globalStyles.container}>
-        <ScrollView 
-            style={styles.scroll}
-            showsVerticalScrollIndicator ={false}
-        >
-            {global.language=="English" ? <Text style={styles.chapterNum}>{chapter}</Text> : <Text style={styles.chapterNum}>{romanizeUpper(chapter)}</Text>}
-            {verses}
-        </ScrollView>
+                <FlatList 
+                style={styles.scroll}
+                data={psalms}
+                renderItem={renderItem}
+                maxToRenderPerBatch={100}
+
+                //renderItem={({item, index})=>renderItem(item)}
+                // onEndReachedThreshold={4}
+                // onEndReached={retrieveMore}
+                keyExtractor={(item, index) => index.toString()}
+                refreshing={refreshing}
+            />
         <MyPlayer playerRef ={playerRef}/>
       </View>
       </View>
