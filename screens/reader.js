@@ -3,6 +3,10 @@ import { StyleSheet, View, Text, ScrollView, Button } from "react-native";
 import { globalStyles } from '../styles/global';
 //import { Audio } from 'expo-av';
 import MyPlayer from '../shared/audioPlayer'
+import { PanGestureHandler } from "react-native-gesture-handler"
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import textData from '../assets/csvjson'
+
 
 export default function Reader({route, navigation}) {
     const { chapter, text } = route.params;
@@ -69,18 +73,89 @@ export default function Reader({route, navigation}) {
         )
     } 
 
+    const flipChaptersForward = () => {
+      const psalms = textData.filter((item)=> item.ShortBook == 'PSAL')
+      const chapterText = psalms.filter((item)=> item.Chapter==(chapter+1))
+
+      navigation.navigate('Reader', {
+        name: 'Psalm ' + (chapter+1),
+        chapter: (chapter+1),
+        text: chapterText
+    })
+    }
+
+    const flipChaptersBack = () => {
+      const psalms = textData.filter((item)=> item.ShortBook == 'PSAL')
+      const chapterText = psalms.filter((item)=> item.Chapter==(chapter-1))
+
+      navigation.navigate('Reader', {
+        name: 'Psalm ' + (chapter-1),
+        chapter: (chapter-1),
+        text: chapterText
+    })
+    }
+
+    // const oldLeftActions = () => {
+    //   return (
+    //     <View
+    //       style={{ flex: 1, justifyContent: 'center' }}>
+    //       <Text
+    //         style={{
+    //           color: 'black',
+    //           paddingHorizontal: 10,
+    //           fontWeight: '600'
+    //         }}>
+    //         Left Action
+    //       </Text>
+    //     </View>
+    //   )
+    //  }
+
+    //  const [myText, setText] = useState("not swiped")
+
+    //  const onSwipeRight = (gestureState) => {
+    // //   navigation.navigate('Reader', {
+    // //     name: 'Psalm ' + chapter,
+    // //     chapter: chapter,
+    // //     text: text
+    // // })
+    // // console.log("swiped");
+    // setText("yep")
+    //  }
+
     return (
-        <View style={globalStyles.mainContainer}>
-        <View style={globalStyles.container}>
-        <ScrollView 
-            style={styles.scroll}
-            showsVerticalScrollIndicator ={false}
-        >
-            {global.language=="English" ? <Text style={styles.chapterNum}>{chapter}</Text> : <Text style={styles.chapterNum}>{romanizeUpper(chapter)}</Text>}
-            {verses}
-        </ScrollView>
-        <MyPlayer playerRef ={playerRef}/>
-      </View>
+      <View style={globalStyles.mainContainer}>
+        <View style={[globalStyles.container, {flex: 8}]}>
+            
+              <ScrollView 
+                style={styles.scroll}
+                showsVerticalScrollIndicator ={false}
+              >
+                {global.language=="English" ? <Text style={styles.chapterNum}>{chapter}</Text> : <Text style={styles.chapterNum}>{romanizeUpper(chapter)}</Text>}
+                {verses}
+              </ScrollView>
+            {/* <GestureRecognizer
+            style={{height: 100}}
+              onSwipeRight={(state) => onSwipeRight(state)}
+            >
+              <Text>{myText}</Text>
+            </GestureRecognizer> */}
+         
+        </View>
+        <View style={{flex:1, flexDirection: 'row'}}>
+        <Button 
+            style={{flex:1}}
+            title="prev chapter"
+            onPress={flipChaptersBack}
+          />
+         <MyPlayer style={{flex:1}} playerRef ={playerRef}/>
+          <Button 
+            style={{flex:1}}
+            title="next chapter"
+            onPress={flipChaptersForward}
+          />
+        </View>
+        
       </View>
     )
 }
@@ -92,7 +167,7 @@ const styles = StyleSheet.create ({
 
     },
     scroll: {
-        height: '80%'
+        flex: 5
     }
 
 })
