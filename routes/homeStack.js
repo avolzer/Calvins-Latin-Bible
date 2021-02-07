@@ -28,7 +28,7 @@ export default function HomeStack( {navigation} ) {
                     backgroundColor:'white',
                     //elevation: 0,
                     borderBottomColor: 'black',
-                    height: 120,
+                    //height: 120,
                     //borderBottomWidth: .5
                 },
                 headerTitleStyle: {

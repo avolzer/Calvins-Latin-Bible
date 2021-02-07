@@ -12,7 +12,7 @@ export default function HomeHeader() {
     }
 
     return (
-        <View>
+        <View style={{padding: 10}}>
             <Feather name='menu' size={28} onPress={openMenu}/>
         </View>
     );

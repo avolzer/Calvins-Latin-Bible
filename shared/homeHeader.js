@@ -12,7 +12,7 @@ export default function HomeHeader() {
     }
 
     return (
-        <View>
+        <View style={{padding: 10}}>
             <EvilIcons name='search' size={28} onPress={pressHandler}/>
         </View>
     );
