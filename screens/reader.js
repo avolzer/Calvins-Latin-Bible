@@ -5,15 +5,17 @@ import { globalStyles } from '../styles/global';
 import MyPlayer from '../shared/audioPlayer'
 import textData from '../assets/csvjson'
 import { ListItem } from 'react-native-elements';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function Reader({route, navigation}) {
 
     React.memo(function Reader (props) {
       return false;
     })
-    const { chapter, text } = route.params;
+   // const { chapter, text } = route.params;
 
     const playerRef = useRef();
+    const flatListRef = useRef();
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('blur', () => {
@@ -79,44 +81,67 @@ export default function Reader({route, navigation}) {
     const [data, setData] = useState([]);
     const [current, setCurrent] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
-    
+   // const [currChapter, setCurrChapter] = useState(0);
+    var currChapter = 0;
 
-    const retrieveMore=() => {
-      const verses = []
-      if (refreshing){
-        return null;
-      }
-      console.log("here it is")
-      setRefreshing(true)
-        for ( let i = current; i < current+200; i++){
-            verses.push(
-                psalms[i]
-            )
-            //console.log(psalms[i].Text);
-        } 
-        setData(verses)
-        setCurrent(current+200)
-        setRefreshing(false)
-    };
+    // const retrieveMore=() => {
+    //   const verses = []
+    //   if (refreshing){
+    //     return null;
+    //   }
+    //   console.log("here it is")
+    //   setRefreshing(true)
+    //     for ( let i = current; i < current+200; i++){
+    //         verses.push(
+    //             psalms[i]
+    //         )
+    //         //console.log(psalms[i].Text);
+    //     } 
+    //     setData(verses)
+    //     setCurrent(current+200)
+    //     setRefreshing(false)
+    // };
 
     //const memoizedValue = useMemo(() => renderItem(), [productsState.product]);
 
+    const chapNum = (item) => {
+      if (item.Chapter == currChapter){
+      }else{
+        currChapter= item.Chapter
+        return(
+          <Text style={styles.chapterNum}>{item.Chapter}</Text>
+        )
+      }
+    }
+
 
     const renderItem = ({ item }) => (
-      <View>
-        <Text>{item.Text}</Text>
+      <View style={{flexDirection: 'row', alignItems: 'flex-start'}}>
+        {chapNum(item)}
+        <Text style={superScript}>{item.Verse}</Text>
+        <Text style={regular}>{item.Text}</Text>
       </View>
     )
 
+    // const scrollToIndex = () => {
+    //   listRef.current.scrollToIndex({index:20})
+    // }
+    const getItemLayout = (data, index) => (
+      { length: 50, offset: 50 * index, index }
+    )
 
     return (
         <View style={globalStyles.mainContainer}>
+        {/* <Button onPress={scrollToIndex()}>Press to scroll</Button> */}
         <View style={globalStyles.container}>
                 <FlatList 
                 style={styles.scroll}
                 data={psalms}
                 renderItem={renderItem}
                 maxToRenderPerBatch={100}
+                showsVerticalScrollIndicator={false}
+                ref={flatListRef}
+                getItemLayout={getItemLayout}
 
                 //renderItem={({item, index})=>renderItem(item)}
                 // onEndReachedThreshold={4}
@@ -124,6 +149,7 @@ export default function Reader({route, navigation}) {
                 keyExtractor={(item, index) => index.toString()}
                 refreshing={refreshing}
             />
+            <TouchableOpacity onPress={() => flatListRef.current.scrollToIndex({index: 300, animated: true })}><Text>PRESS HERE</Text></TouchableOpacity>
         <MyPlayer playerRef ={playerRef}/>
       </View>
       </View>
