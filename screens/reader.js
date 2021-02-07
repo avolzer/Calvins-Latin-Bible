@@ -3,15 +3,16 @@ import { StyleSheet, View, Text, ScrollView, Button } from "react-native";
 import { globalStyles } from '../styles/global';
 //import { Audio } from 'expo-av';
 import MyPlayer from '../shared/audioPlayer'
-import { PanGestureHandler } from "react-native-gesture-handler"
+import { PanGestureHandler, TouchableOpacity } from "react-native-gesture-handler"
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import textData from '../assets/csvjson'
-
+import {MaterialIcons} from '@expo/vector-icons'
 
 export default function Reader({route, navigation}) {
     const { chapter, text } = route.params;
 
     const playerRef = useRef();
+    const mainScrollView = useRef();
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('blur', () => {
@@ -74,6 +75,7 @@ export default function Reader({route, navigation}) {
     } 
 
     const flipChaptersForward = () => {
+      mainScrollView.current.scrollTo({x: 0, y: 0, animated:false})
       const psalms = textData.filter((item)=> item.ShortBook == 'PSAL')
       const chapterText = psalms.filter((item)=> item.Chapter==(chapter+1))
 
@@ -85,6 +87,8 @@ export default function Reader({route, navigation}) {
     }
 
     const flipChaptersBack = () => {
+      mainScrollView.current.scrollTo({x: 0, y: 0, animated:false})
+
       const psalms = textData.filter((item)=> item.ShortBook == 'PSAL')
       const chapterText = psalms.filter((item)=> item.Chapter==(chapter-1))
 
@@ -130,9 +134,11 @@ export default function Reader({route, navigation}) {
               <ScrollView 
                 style={styles.scroll}
                 showsVerticalScrollIndicator ={false}
+                ref={mainScrollView}
               >
                 {global.language=="English" ? <Text style={styles.chapterNum}>{chapter}</Text> : <Text style={styles.chapterNum}>{romanizeUpper(chapter)}</Text>}
                 {verses}
+
               </ScrollView>
             {/* <GestureRecognizer
             style={{height: 100}}
@@ -143,17 +149,20 @@ export default function Reader({route, navigation}) {
          
         </View>
         <View style={{flex:1, flexDirection: 'row'}}>
-        <Button 
+        {/* <Button 
             style={{flex:1}}
             title="prev chapter"
             onPress={flipChaptersBack}
-          />
+          /> */}
+          {chapter>1 ?
+          <TouchableOpacity style={{height: '100%', justifyContent:'center'}} onPress={flipChaptersBack}>
+            <MaterialIcons name="navigate-before" size={50} color="gray" style={{paddingLeft:20}}></MaterialIcons>
+          </TouchableOpacity>
+          : <MaterialIcons name="navigate-before" size={50} color="white" style={{paddingLeft:20}}></MaterialIcons> }
          <MyPlayer style={{flex:1}} playerRef ={playerRef}/>
-          <Button 
-            style={{flex:1}}
-            title="next chapter"
-            onPress={flipChaptersForward}
-          />
+         <TouchableOpacity style={{height: '100%', justifyContent:'center'}} onPress={flipChaptersForward}>
+            <MaterialIcons name="navigate-next" size={50} color="gray" style={{paddingRight:20}}></MaterialIcons>
+          </TouchableOpacity>
         </View>
         
       </View>
