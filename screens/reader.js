@@ -7,12 +7,16 @@ import { PanGestureHandler, TouchableOpacity } from "react-native-gesture-handle
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import textData from '../assets/csvjson'
 import {MaterialIcons} from '@expo/vector-icons'
+import HTML from "react-native-render-html";
+
 
 export default function Reader({route, navigation}) {
     const { chapter, text } = route.params;
 
     const playerRef = useRef();
     const mainScrollView = useRef();
+
+    const [lang, setLang] = useState("Latin")
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('blur', () => {
@@ -74,6 +78,28 @@ export default function Reader({route, navigation}) {
         )
     } 
 
+    const [latinVerses, setLatinVerses] = useState("<p></p>")
+    
+    const getChapter = async() => {
+      const API_KEY = `c3fd729feb669c03c2d4d5474409d775`;
+      var url = "https://api.scripture.api.bible/v1/bibles/de4e12af7f28f599-01/chapters/PSA."+chapter + "?content-type=html&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
+
+      fetch(url,
+      {
+          method: 'GET', 
+          headers: new Headers({
+              'api-key': API_KEY
+          }),
+      })
+      .then((response) => response.json())
+      .then((responseJson) => {
+          setLatinVerses(responseJson.data.content)
+      }).catch((error) => {
+          alert(error)
+      })
+    }
+
+
     const flipChaptersForward = () => {
       mainScrollView.current.scrollTo({x: 0, y: 0, animated:false})
       const psalms = textData.filter((item)=> item.ShortBook == 'PSAL')
@@ -127,10 +153,21 @@ export default function Reader({route, navigation}) {
     // setText("yep")
     //  }
 
+    const pressLanguage =() => {
+      if (lang=="Latin"){
+        getChapter();
+        setLang("English")
+      }
+      else{
+        setLang("Latin")
+      }
+    }
+
     return (
       <View style={globalStyles.mainContainer}>
         <View style={[globalStyles.container, {flex: 8}]}>
-            
+            <Button title="Toggle Language" onPress={pressLanguage}/>
+            {lang=="Latin" ?
               <ScrollView 
                 style={styles.scroll}
                 showsVerticalScrollIndicator ={false}
@@ -140,6 +177,18 @@ export default function Reader({route, navigation}) {
                 {verses}
 
               </ScrollView>
+              : 
+              <ScrollView 
+                style={styles.scroll}
+                showsVerticalScrollIndicator ={false}
+                ref={mainScrollView}
+              >
+                {global.language=="English" ? <Text style={styles.chapterNum}>{chapter}</Text> : <Text style={styles.chapterNum}>{romanizeUpper(chapter)}</Text>}
+                  <HTML source={{ html: latinVerses }} />
+
+                  </ScrollView>
+               }
+
             {/* <GestureRecognizer
             style={{height: 100}}
               onSwipeRight={(state) => onSwipeRight(state)}
