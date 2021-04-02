@@ -11,19 +11,46 @@ import HTML from "react-native-render-html";
 
 
 export default function Reader({route, navigation}) {
+
+    
     const { chapter, text } = route.params;
 
     const playerRef = useRef();
     const mainScrollView = useRef();
 
     const [lang, setLang] = useState("Latin")
+    //const [chap, setChap] = useState(1)
+    
+    // const [chapter, setChapter] = useState(cchapter)
+    // const [text, setText] = useState(ttext)
+
+    // const mounted = useRef();
+    // useEffect(() => {
+    //   if (!mounted.current) {
+    //     const { chapter, text } = route.params;
+    //     mounted.current = true;
+    //   } else {
+    //     //console.log("hi");
+    //     // setChapter(cchapter);
+    //     // setText(ttext);
+    //   }
+    // });
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('blur', () => {
-          playerRef.current.pauseVideo();
+          playerRef.current.stopAudio();
         });
+
+        const { chapter, text } = route.params;
         return unsubscribe;
     }, [navigation]);
+
+    useEffect(() => {
+      const unsubscribe = navigation.addListener('didFocus', () => {
+        console.log("please")
+      });
+      return unsubscribe;
+  }, [navigation]);
 
     const fontSize=20
     const superFontSize = Math.floor(fontSize * 0.6)
@@ -80,9 +107,14 @@ export default function Reader({route, navigation}) {
 
     const [latinVerses, setLatinVerses] = useState("<p></p>")
     
-    const getChapter = async() => {
+
+    useEffect(() => {
+      getEnglish(chapter);      
+    }, []);
+
+    const getEnglish = async(ch) => {
       const API_KEY = `c3fd729feb669c03c2d4d5474409d775`;
-      var url = "https://api.scripture.api.bible/v1/bibles/de4e12af7f28f599-01/chapters/PSA."+chapter + "?content-type=html&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
+      var url = "https://api.scripture.api.bible/v1/bibles/de4e12af7f28f599-01/chapters/PSA."+ch + "?content-type=html&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false"
 
       fetch(url,
       {
@@ -99,17 +131,22 @@ export default function Reader({route, navigation}) {
       })
     }
 
+    const [num, setNum] = useState(0)
+
 
     const flipChaptersForward = () => {
       mainScrollView.current.scrollTo({x: 0, y: 0, animated:false})
       const psalms = textData.filter((item)=> item.ShortBook == 'PSAL')
       const chapterText = psalms.filter((item)=> item.Chapter==(chapter+1))
+      playerRef.current.stopAudio();
+
 
       navigation.navigate('Reader', {
         name: 'Psalm ' + (chapter+1),
         chapter: (chapter+1),
         text: chapterText
     })
+      getEnglish(chapter+1)
     }
 
     const flipChaptersBack = () => {
@@ -117,12 +154,16 @@ export default function Reader({route, navigation}) {
 
       const psalms = textData.filter((item)=> item.ShortBook == 'PSAL')
       const chapterText = psalms.filter((item)=> item.Chapter==(chapter-1))
+      playerRef.current.stopAudio();
 
       navigation.navigate('Reader', {
         name: 'Psalm ' + (chapter-1),
         chapter: (chapter-1),
         text: chapterText
     })
+
+      getEnglish(chapter-1)
+
     }
 
     // const oldLeftActions = () => {
@@ -155,7 +196,6 @@ export default function Reader({route, navigation}) {
 
     const pressLanguage =() => {
       if (lang=="Latin"){
-        getChapter();
         setLang("English")
       }
       else{
@@ -208,7 +248,7 @@ export default function Reader({route, navigation}) {
             <MaterialIcons name="navigate-before" size={50} color="gray" style={{paddingLeft:20}}></MaterialIcons>
           </TouchableOpacity>
           : <MaterialIcons name="navigate-before" size={50} color="white" style={{paddingLeft:20}}></MaterialIcons> }
-         <MyPlayer style={{flex:1}} playerRef ={playerRef}/>
+         <MyPlayer chapter={chapter} style={{flex:1}} playerRef ={playerRef} />
          <TouchableOpacity style={{height: '100%', justifyContent:'center'}} onPress={flipChaptersForward}>
             <MaterialIcons name="navigate-next" size={50} color="gray" style={{paddingRight:20}}></MaterialIcons>
           </TouchableOpacity>

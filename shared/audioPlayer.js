@@ -8,7 +8,30 @@ import {useRoute} from '@react-navigation/native';
 
 
 export default function MyPlayer( props ){
-    const path = require('../assets/PSALM-1-TEST.mp3')
+
+	const thepath = [
+		require('../assets/PSALM-1-TEST.mp3'),
+	    require('../assets/PSALM-2-TEST.mp3'),
+	require('../assets/PSALM-3-TEST.mp3'),
+	require('../assets/PSALM-4-TEST.mp3'),
+	require('../assets/PSALM-5-TEST.mp3'),
+	require('../assets/PSALM-6-TEST.mp3')
+	]
+
+	useEffect(()=>
+	{
+		console.log("pleasework");
+		console.log(props.chapter);
+		const loadData = async () => {
+			try {
+				loadAudio();
+			} catch (e) {
+				console.log(e);
+			}
+		};
+		loadData();
+	}, [props.chapter]);
+
  
     const playbackInstance = new Audio.Sound();
 
@@ -16,19 +39,25 @@ export default function MyPlayer( props ){
 		isPlaying: false,
 		playbackInstance: null,
 		currentIndex: 0,
-		isBuffering: true
+		isBuffering: true,
     });
 
-    const pause = async () => {
+    const stop = async () => {
 
         if(state.isPlaying){
             await state.playbackInstance.stopAsync();
-        }
+		};
+		playbackInstance.unloadAsync();
     }
     
     useImperativeHandle(props.playerRef, () => ({
-        pauseVideo: () => {
-            pause();
+        stopAudio: () => {
+			const { isPlaying, playbackInstance } = state;
+			setState((curState) => ({
+                ...curState,
+                isPlaying: false
+            }));
+			stop();
         },
       }));
 
@@ -36,7 +65,8 @@ export default function MyPlayer( props ){
 		const { isPlaying } = state;
 
 		try {
-			const source = path
+			const source = thepath[(props.chapter - 1)%6]
+			console.log("trying")
 			const status = {
 				shouldPlay: isPlaying,
 			};
@@ -52,16 +82,16 @@ export default function MyPlayer( props ){
 		}
 	};
 
-	useEffect(() => {
-		const loadData = async () => {
-			try {
-				loadAudio();
-			} catch (e) {
-				console.log(e);
-			}
-		};
-        loadData();    
-    }, []);  
+	// useEffect(() => {
+	// 	const loadData = async () => {
+	// 		try {
+	// 			loadAudio();
+	// 		} catch (e) {
+	// 			console.log(e);
+	// 		}
+	// 	};
+    //     loadData();    
+    // }, []);  
  
 	const PlayPauseHandler = async () => {
         
@@ -81,6 +111,8 @@ export default function MyPlayer( props ){
             }));
         }        
 	};
+
+
 
 	return (
 		<View
