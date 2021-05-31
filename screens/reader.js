@@ -54,6 +54,7 @@ export default function Reader({route, navigation}) {
 
     const fontSize=20
     const superFontSize = Math.floor(fontSize * 0.6)
+    
     const superlineHeight = superFontSize * 1.1
 
     const superScript = {
@@ -107,7 +108,6 @@ export default function Reader({route, navigation}) {
 
     const [latinVerses, setLatinVerses] = useState("<p></p>")
     
-
     useEffect(() => {
       getEnglish(chapter);      
     }, []);
@@ -202,6 +202,7 @@ export default function Reader({route, navigation}) {
         setLang("Latin")
       }
     }
+    
 
     return (
       <View style={globalStyles.mainContainer}>
@@ -224,7 +225,21 @@ export default function Reader({route, navigation}) {
                 ref={mainScrollView}
               >
                 {global.language=="English" ? <Text style={styles.chapterNum}>{chapter}</Text> : <Text style={styles.chapterNum}>{romanizeUpper(chapter)}</Text>}
-                  <HTML source={{ html: latinVerses }} />
+                  <HTML 
+                  baseFontStyle= {{textAlignVertical: 'bottom',
+                  fontSize: fontSize,
+                  lineHeight: 35,
+                  color: 'black',
+                  fontFamily: 'serif'}}
+                  classesStyles= {
+
+                    { 'v' : {textAlignVertical: 'top', fontSize: superFontSize
+                   }}
+                  }
+                                  
+                  source={{ html: latinVerses }}
+                 />
+                  <Text>{latinVerses}</Text>
 
                   </ScrollView>
                }

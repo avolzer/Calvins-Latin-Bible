@@ -9,45 +9,52 @@ import {useRoute} from '@react-navigation/native';
 
 export default function MyPlayer( props ){
 
-	const thepath = [
+	const paths = [
 		require('../assets/PSALM-1-TEST.mp3'),
 	    require('../assets/PSALM-2-TEST.mp3'),
-	require('../assets/PSALM-3-TEST.mp3'),
-	require('../assets/PSALM-4-TEST.mp3'),
-	require('../assets/PSALM-5-TEST.mp3'),
-	require('../assets/PSALM-6-TEST.mp3')
+		require('../assets/PSALM-3-TEST.mp3'),
+		require('../assets/PSALM-4-TEST.mp3'),
+		require('../assets/PSALM-5-TEST.mp3'),
+		require('../assets/PSALM-6-TEST.mp3')
 	]
 
+	const loadData = async () => {
+		try {
+			loadAudio();
+		} catch (e) {
+			console.log(e);
+		}
+	};
+	
 	useEffect(()=>
 	{
-		console.log("pleasework");
 		console.log(props.chapter);
-		const loadData = async () => {
-			try {
-				loadAudio();
-			} catch (e) {
-				console.log(e);
-			}
-		};
+		
 		loadData();
 	}, [props.chapter]);
 
  
-    const playbackInstance = new Audio.Sound();
+	const playbackInstance = new Audio.Sound();
 
 	const [ state, setState ] = useState({
 		isPlaying: false,
 		playbackInstance: null,
 		currentIndex: 0,
 		isBuffering: true,
+		isLoaded: false,
+		reachedEnd: false,
     });
 
     const stop = async () => {
-
         if(state.isPlaying){
             await state.playbackInstance.stopAsync();
 		};
 		playbackInstance.unloadAsync();
+		setState((curState) => ({
+			...curState,
+			isLoaded: false
+		}));
+		
     }
     
     useImperativeHandle(props.playerRef, () => ({
@@ -55,47 +62,52 @@ export default function MyPlayer( props ){
 			const { isPlaying, playbackInstance } = state;
 			setState((curState) => ({
                 ...curState,
-                isPlaying: false
+				isPlaying: false,
             }));
 			stop();
         },
-      }));
+	  }));
+	  
+	const _onPlaybackStatusUpdate = async (playbackStatus) => {
+		  if (playbackStatus.didJustFinish){
+			await playbackInstance.pauseAsync();
+			  setState((curState) => ({
+                ...curState,
+				isPlaying: false,
+				reachedEnd: true,
+			}));
+		  }
+	  }
 
 	const loadAudio = async () => {
 		const { isPlaying } = state;
 
 		try {
-			const source = thepath[(props.chapter - 1)%6]
-			console.log("trying")
+			const source = paths[(props.chapter - 1)%6]
 			const status = {
 				shouldPlay: isPlaying,
 			};
 			//playbackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+			playbackInstance.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
 			await playbackInstance.loadAsync(source, status, false);
 
 			setState((curState) => ({
 				...curState,
-				playbackInstance
+				playbackInstance,
 			}));
+			setState((curState) => ({
+                ...curState,
+                isLoaded: true,
+			}));
+
 		} catch (e) {
 			console.log(e);
 		}
 	};
-
-	// useEffect(() => {
-	// 	const loadData = async () => {
-	// 		try {
-	// 			loadAudio();
-	// 		} catch (e) {
-	// 			console.log(e);
-	// 		}
-	// 	};
-    //     loadData();    
-    // }, []);  
  
 	const PlayPauseHandler = async () => {
         
-        const { isPlaying, playbackInstance } = state;
+        const { isPlaying, playbackInstance, isLoaded, reachedEnd } = state;
         
         if (isPlaying){
             await playbackInstance.pauseAsync();
@@ -104,15 +116,23 @@ export default function MyPlayer( props ){
                 isPlaying: false
             }));
         } else{
-            await playbackInstance.playAsync();
+			if (reachedEnd)
+			{
+				playbackInstance.replayAsync();
+				setState((curState) => ({
+					...curState,
+					reachedEnd: false,
+					isPlaying: true,
+				}));
+			}
+            else{
+				await playbackInstance.playAsync();
             setState((curState) => ({
                 ...curState,
                 isPlaying: true
-            }));
+            }));}
         }        
 	};
-
-
 
 	return (
 		<View
