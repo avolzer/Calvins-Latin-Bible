@@ -23,10 +23,19 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.avolzer.psalter"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f6a81507-32ce-47b3-a19b-435e180688e2"
+      }
+    },
+    "plugins": [
+      "expo-asset"
+    ]
   }
 }
