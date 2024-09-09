@@ -1,27 +1,31 @@
-import * as React from 'react';
-import { Button, View } from 'react-native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import { NavigationContainer } from '@react-navigation/native';
+import * as React from "react";
+import { Button, View } from "react-native";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { NavigationContainer } from "@react-navigation/native";
 
-import Home from '../routes/homeStack';
-import About from '../routes/aboutStack';
-import Settings from '../routes/settingsStack'
+import Home from "../routes/homeStack";
+import About from "../routes/aboutStack";
+import Settings from "../routes/settingsStack";
 
 const Drawer = createDrawerNavigator();
 
 export default function App() {
-    
-    return (
-        <NavigationContainer>
-        <Drawer.Navigator initialRouteName="Home">
-            <Drawer.Screen 
-                name="Contents" 
-                component={Home}
-                options={{unmountOnBlur:true}} />
-            <Drawer.Screen name="About" component={About} />
-            <Drawer.Screen name="Settings" component={Settings} />
-        </Drawer.Navigator>
-        </NavigationContainer>
-
-    );
-};
+  return (
+    <NavigationContainer>
+      <Drawer.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Drawer.Screen
+          name="Contents"
+          component={Home}
+          options={{ unmountOnBlur: true }}
+        />
+        <Drawer.Screen name="About" component={About} />
+        <Drawer.Screen name="Settings" component={Settings} />
+      </Drawer.Navigator>
+    </NavigationContainer>
+  );
+}
