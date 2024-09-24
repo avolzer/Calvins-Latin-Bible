@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
+    "@react-native-community/slider": "^4.5.3",
     "@react-native-masked-view/masked-view": "0.3.1",
     "@react-native-picker/picker": "^2.8.0",
     "@react-navigation/drawer": "^6.7.2",
@@ -30,6 +31,7 @@
     "react-native-safe-area-context": "^3.1.9",
     "react-native-screens": "3.31.1",
     "react-native-swipe-gestures": "^1.0.5",
+    "react-native-video": "^6.6.2",
     "react-native-web": "~0.19.10",
     "react-navigation": "^5.0.0"
   },

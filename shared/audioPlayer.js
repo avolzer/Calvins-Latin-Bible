@@ -4,6 +4,7 @@ import { globalStyles } from "../styles/global";
 import { Audio } from "expo-av";
 import { AntDesign } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
+import ProgressBar from "./progressBar";
 
 export default function MyPlayer(props) {
   const paths = [
@@ -54,6 +55,10 @@ export default function MyPlayer(props) {
     isBuffering: true,
     isLoaded: false,
     reachedEnd: false,
+    durationMillis: 1,
+    positionMillis: 0,
+    sliderValue: 0,
+    isSeeking: false,
   });
 
   const stop = async () => {
@@ -78,7 +83,7 @@ export default function MyPlayer(props) {
     },
   }));
 
-  const _onPlaybackStatusUpdate = async (playbackStatus) => {
+  const onPlaybackStatusUpdate = async (playbackStatus) => {
     if (playbackStatus.didJustFinish) {
       await playbackInstance.pauseAsync();
       setState((curState) => ({
@@ -87,6 +92,13 @@ export default function MyPlayer(props) {
         reachedEnd: true,
       }));
     }
+    setState((curState) => ({
+      ...curState,
+      durationMillis: playbackStatus.durationMillis,
+      positionMillis: playbackStatus.positionMillis,
+      sliderValue:
+        playbackStatus.positionMillis / playbackStatus.durationMillis,
+    }));
   };
 
   const loadAudio = async () => {
@@ -97,8 +109,8 @@ export default function MyPlayer(props) {
       const status = {
         shouldPlay: isPlaying,
       };
-      //playbackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-      playbackInstance.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
+      playbackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+      // playbackInstance.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
       await playbackInstance.loadAsync(source, status, false);
 
       setState((curState) => ({
@@ -113,6 +125,13 @@ export default function MyPlayer(props) {
       console.log(e);
     }
   };
+  // startInterval = () => {
+  //   const interval = setInterval(() => {
+  //     setState({
+  //       sliderValue: state.positionMillis / state.durationMillis,
+  //     });
+  //   }, 1000);
+  // };
 
   const PlayPauseHandler = async () => {
     const { isPlaying, playbackInstance, isLoaded, reachedEnd } = state;
@@ -133,6 +152,7 @@ export default function MyPlayer(props) {
         }));
       } else {
         await playbackInstance.playAsync();
+        // startInterval();
         setState((curState) => ({
           ...curState,
           isPlaying: true,
@@ -147,6 +167,7 @@ export default function MyPlayer(props) {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        marginBottom: 64,
       }}
     >
       {state.isPlaying ? (
@@ -154,6 +175,11 @@ export default function MyPlayer(props) {
       ) : (
         <AntDesign name="playcircleo" size={50} onPress={PlayPauseHandler} />
       )}
+      <ProgressBar
+        durationMillis={state.durationMillis}
+        positionMillis={state.positionMillis}
+        sliderValue={state.sliderValue}
+      />
     </View>
   );
 }

@@ -36,13 +36,13 @@ export default function Reader({ route, navigation }) {
     setShowLongmarks((previousState) => !previousState);
   const [modalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("blur", () => {
-      playerRef.current.stopAudio();
-    });
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener("blur", () => {
+  //     playerRef.current.stopAudio();
+  //   });
 
-    return unsubscribe;
-  }, [navigation]);
+  //   return unsubscribe;
+  // }, [navigation]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("didFocus", () => {});
@@ -178,7 +178,7 @@ export default function Reader({ route, navigation }) {
     mainScrollView.current.scrollTo({ x: 0, y: 0, animated: false });
     const psalms = textData.filter((item) => item.ShortBook == "PSAL");
     const chapterText = psalms.filter((item) => item.Chapter == chapter + 1);
-    playerRef.current.stopAudio();
+    // playerRef.current.stopAudio();
 
     navigation.navigate("Reader", {
       name: "Psalm " + (chapter + 1),
@@ -193,7 +193,7 @@ export default function Reader({ route, navigation }) {
 
     const psalms = textData.filter((item) => item.ShortBook == "PSAL");
     const chapterText = psalms.filter((item) => item.Chapter == chapter - 1);
-    playerRef.current.stopAudio();
+    // playerRef.current.stopAudio();
 
     navigation.navigate("Reader", {
       name: "Psalm " + (chapter - 1),
