@@ -37,14 +37,6 @@ export default function Reader({ route, navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener("blur", () => {
-      playerRef.current.stopAudio();
-    });
-
-    return unsubscribe;
-  }, [navigation]);
-
-  useEffect(() => {
     const unsubscribe = navigation.addListener("didFocus", () => {});
     return unsubscribe;
   }, [navigation]);
@@ -178,7 +170,6 @@ export default function Reader({ route, navigation }) {
     mainScrollView.current.scrollTo({ x: 0, y: 0, animated: false });
     const psalms = textData.filter((item) => item.ShortBook == "PSAL");
     const chapterText = psalms.filter((item) => item.Chapter == chapter + 1);
-    playerRef.current.stopAudio();
 
     navigation.navigate("Reader", {
       name: "Psalm " + (chapter + 1),
@@ -193,7 +184,6 @@ export default function Reader({ route, navigation }) {
 
     const psalms = textData.filter((item) => item.ShortBook == "PSAL");
     const chapterText = psalms.filter((item) => item.Chapter == chapter - 1);
-    playerRef.current.stopAudio();
 
     navigation.navigate("Reader", {
       name: "Psalm " + (chapter - 1),
@@ -313,7 +303,7 @@ export default function Reader({ route, navigation }) {
           </View>
         </View>
       </Modal>
-      <View style={[globalStyles.container, { flex: 8 }]}>
+      <View style={[globalStyles.container, { flex: 6 }]}>
         <View
           style={{
             flexDirection: "row",
@@ -388,38 +378,13 @@ export default function Reader({ route, navigation }) {
             </GestureRecognizer> */}
       </View>
       <View style={{ flex: 1, flexDirection: "row" }}>
-        {chapter > 1 ? (
-          <TouchableOpacity
-            style={{ height: "100%", justifyContent: "center" }}
-            onPress={flipChaptersBack}
-          >
-            <MaterialIcons
-              name="navigate-before"
-              size={50}
-              color="gray"
-              style={{ paddingLeft: 20 }}
-            ></MaterialIcons>
-          </TouchableOpacity>
-        ) : (
-          <MaterialIcons
-            name="navigate-before"
-            size={50}
-            color="white"
-            style={{ paddingLeft: 20 }}
-          ></MaterialIcons>
-        )}
-        <MyPlayer chapter={chapter} style={{ flex: 1 }} playerRef={playerRef} />
-        <TouchableOpacity
-          style={{ height: "100%", justifyContent: "center" }}
-          onPress={flipChaptersForward}
-        >
-          <MaterialIcons
-            name="navigate-next"
-            size={50}
-            color="gray"
-            style={{ paddingRight: 20 }}
-          ></MaterialIcons>
-        </TouchableOpacity>
+        <MyPlayer
+          chapter={chapter}
+          style={{ flex: 1 }}
+          playerRef={playerRef}
+          onNext={flipChaptersForward}
+          onPrevious={flipChaptersBack}
+        />
       </View>
     </View>
   );

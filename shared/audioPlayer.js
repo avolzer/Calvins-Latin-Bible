@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useImperativeHandle } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, View, Text, ScrollView, Button } from "react-native";
-import { globalStyles } from "../styles/global";
 import { Audio } from "expo-av";
 import { AntDesign } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
+import ProgressBar from "./progressBar";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function MyPlayer(props) {
   const paths = [
@@ -31,6 +32,22 @@ export default function MyPlayer(props) {
     require("../assets/PS22.mp3"),
   ];
 
+  const [state, setState] = useState({
+    isPlaying: false,
+    playbackInstance: null,
+    currentIndex: 0,
+    isBuffering: true,
+    isLoaded: false,
+    reachedEnd: false,
+    durationMillis: 1,
+    positionMillis: 0,
+    sliderValue: 0,
+    isSeeking: false,
+  });
+
+  const intervalRef = useRef();
+  const [sequence, setSequence] = useState(0);
+
   const loadData = async () => {
     try {
       loadAudio();
@@ -39,22 +56,73 @@ export default function MyPlayer(props) {
     }
   };
 
+  const playbackInstance = new Audio.Sound();
+
+  const loadAudio = async () => {
+    try {
+      const source = paths[(props.chapter - 1) % 22];
+      const status = {};
+      playbackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
+      await playbackInstance.loadAsync(source, status, false);
+      playbackInstance.getStatusAsync().then(function (result) {
+        setState((curState) => ({
+          ...curState,
+          playbackInstance,
+          durationMillis: result.durationMillis,
+          isLoaded: true,
+        }));
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
-    console.log(props.chapter);
+    stop();
+    const intervalId = intervalRef.current;
+    setState((curState) => ({
+      ...curState,
+      isPlaying: false,
+      reachedEnd: false,
+    }));
+    setSequence(0);
+    clearInterval(intervalId);
 
     loadData();
   }, [props.chapter]);
 
-  const playbackInstance = new Audio.Sound();
+  const interval = () => {
+    intervalRef.current = setInterval(async () => {
+      const status = await state.playbackInstance.getStatusAsync();
+      recordingEnded = status.positionMillis >= status.playableDurationMillis;
+      if (recordingEnded) {
+        clearInterval(intervalRef.current);
+        await state.playbackInstance.pauseAsync();
+        setState((curState) => ({
+          ...curState,
+          isPlaying: false,
+          reachedEnd: true,
+          positionMillis: curState.durationMillis,
+        }));
+      } else setSequence((prevSequence) => prevSequence + 1);
+    }, 1000);
+  };
 
-  const [state, setState] = useState({
-    isPlaying: false,
-    playbackInstance: null,
-    currentIndex: 0,
-    isBuffering: true,
-    isLoaded: false,
-    reachedEnd: false,
-  });
+  useEffect(() => {
+    const intervalId = intervalRef.current;
+    setSequence(0);
+
+    // clear on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    setState((curState) => ({
+      ...curState,
+      positionMillis: sequence * 1000,
+      sliderValue: (sequence * 1000) / state.durationMillis,
+    }));
+  }, [sequence]);
 
   const stop = async () => {
     if (state.isPlaying) {
@@ -64,21 +132,11 @@ export default function MyPlayer(props) {
     setState((curState) => ({
       ...curState,
       isLoaded: false,
+      isPlaying: false,
     }));
   };
 
-  useImperativeHandle(props.playerRef, () => ({
-    stopAudio: () => {
-      const { isPlaying, playbackInstance } = state;
-      setState((curState) => ({
-        ...curState,
-        isPlaying: false,
-      }));
-      stop();
-    },
-  }));
-
-  const _onPlaybackStatusUpdate = async (playbackStatus) => {
+  const onPlaybackStatusUpdate = async (playbackStatus) => {
     if (playbackStatus.didJustFinish) {
       await playbackInstance.pauseAsync();
       setState((curState) => ({
@@ -88,83 +146,154 @@ export default function MyPlayer(props) {
       }));
     }
   };
+  const pause = async (playbackInstance) => {
+    await playbackInstance.pauseAsync();
+    clearInterval(intervalRef.current);
+    setState((curState) => ({
+      ...curState,
+      isPlaying: false,
+    }));
+  };
 
-  const loadAudio = async () => {
-    const { isPlaying } = state;
+  const play = async (playbackInstance) => {
+    await playbackInstance.playAsync();
+    interval();
+    setState((curState) => ({
+      ...curState,
+      isPlaying: true,
+    }));
+  };
 
-    try {
-      const source = paths[(props.chapter - 1) % 22];
-      const status = {
-        shouldPlay: isPlaying,
-      };
-      //playbackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-      playbackInstance.setOnPlaybackStatusUpdate(_onPlaybackStatusUpdate);
-      await playbackInstance.loadAsync(source, status, false);
+  const replay = async () => {
+    await state.playbackInstance.replayAsync();
 
-      setState((curState) => ({
-        ...curState,
-        playbackInstance,
-      }));
-      setState((curState) => ({
-        ...curState,
-        isLoaded: true,
-      }));
-    } catch (e) {
-      console.log(e);
-    }
+    setState((curState) => ({
+      ...curState,
+      reachedEnd: false,
+      isPlaying: true,
+      sliderValue: 0,
+    }));
+    setSequence(0);
+    interval();
   };
 
   const PlayPauseHandler = async () => {
     const { isPlaying, playbackInstance, isLoaded, reachedEnd } = state;
 
     if (isPlaying) {
-      await playbackInstance.pauseAsync();
-      setState((curState) => ({
-        ...curState,
-        isPlaying: false,
-      }));
+      pause(playbackInstance);
     } else {
-      if (reachedEnd) {
-        playbackInstance.replayAsync();
-        setState((curState) => ({
-          ...curState,
-          reachedEnd: false,
-          isPlaying: true,
-        }));
-      } else {
-        await playbackInstance.playAsync();
-        setState((curState) => ({
-          ...curState,
-          isPlaying: true,
-        }));
-      }
+      play(playbackInstance);
     }
   };
 
   return (
     <View
       style={{
-        flex: 1,
         justifyContent: "center",
+        flexDirection: "column",
         alignItems: "center",
+        backgroundColor: "#636363",
+        flex: 1,
+        paddingHorizontal: 24,
       }}
     >
-      {state.isPlaying ? (
-        <AntDesign name="pausecircleo" size={50} onPress={PlayPauseHandler} />
-      ) : (
-        <AntDesign name="playcircleo" size={50} onPress={PlayPauseHandler} />
-      )}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 40,
+        }}
+      >
+        {props.chapter > 1 ? (
+          <TouchableOpacity
+            style={{ justifyContent: "center" }}
+            onPress={props.onPrevious}
+          >
+            <MaterialIcons
+              name="skip-previous"
+              size={30}
+              color="gray"
+              style={{ color: "#EAEAEA" }}
+            ></MaterialIcons>
+          </TouchableOpacity>
+        ) : (
+          <MaterialIcons
+            name="skip-previous"
+            size={30}
+            color="#636363"
+            style={{ paddingLeft: 20 }}
+          ></MaterialIcons>
+        )}
+        {state.isPlaying ? (
+          <AntDesign
+            style={{ color: "white" }}
+            name="pausecircle"
+            size={45}
+            onPress={PlayPauseHandler}
+          />
+        ) : (
+          <>
+            {state.reachedEnd ? (
+              <AntDesign
+                style={{ color: "white" }}
+                name="reload1"
+                size={45}
+                onPress={() => {
+                  replay();
+                }}
+              />
+            ) : (
+              <AntDesign
+                style={{ color: "#EAEAEA" }}
+                name="play"
+                size={45}
+                onPress={PlayPauseHandler}
+              />
+            )}
+          </>
+        )}
+        <TouchableOpacity
+          style={{ justifyContent: "center" }}
+          onPress={props.onNext}
+        >
+          <MaterialIcons
+            name="skip-next"
+            size={30}
+            color="gray"
+            style={{ color: "#EAEAEA" }}
+          ></MaterialIcons>
+        </TouchableOpacity>
+      </View>
+      <View style={{ width: "100%" }}>
+        <ProgressBar
+          durationMillis={state.durationMillis}
+          positionMillis={state.positionMillis}
+          sliderValue={state.sliderValue}
+          onSlidingStart={async () => {
+            clearInterval(intervalRef.current);
+          }}
+          onSeek={async (time) => {
+            await state.playbackInstance.playFromPositionAsync(
+              time * state.durationMillis
+            );
+            setSequence(Math.round(time * state.durationMillis) / 1000);
+
+            if (!state.isPlaying) {
+              await pause(state.playbackInstance);
+            } else {
+              interval();
+
+              setState((curState) => ({
+                ...curState,
+                isPlaying: true,
+              }));
+            }
+          }}
+        />
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  audio: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    borderTopWidth: 1,
-  },
-  icon: {
-    paddingLeft: 20,
-  },
-});
+const styles = StyleSheet.create({});
