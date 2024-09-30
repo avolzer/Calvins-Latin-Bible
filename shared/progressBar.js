@@ -3,7 +3,13 @@ import React, { Component } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import Slider from "@react-native-community/slider";
 
-const ProgressBar = ({ positionMillis, durationMillis, sliderValue }) => {
+const ProgressBar = ({
+  positionMillis,
+  durationMillis,
+  sliderValue,
+  onSlidingStart,
+  onSeek,
+}) => {
   function msToTime(s) {
     var ms = s % 1000;
     s = (s - ms) / 1000;
@@ -11,7 +17,9 @@ const ProgressBar = ({ positionMillis, durationMillis, sliderValue }) => {
     s = (s - secs) / 60;
     var mins = s % 60;
 
-    return mins + ":" + secs;
+    secString = secs < 10 ? `0${secs}` : secs;
+
+    return mins + ":" + secString;
   }
   var sliderVal = msToTime(positionMillis);
   return (
@@ -19,7 +27,6 @@ const ProgressBar = ({ positionMillis, durationMillis, sliderValue }) => {
       <View
         style={{
           flexDirection: "row",
-          backgroundColor: "red",
           justifyContent: "space-between",
         }}
       >
@@ -31,10 +38,16 @@ const ProgressBar = ({ positionMillis, durationMillis, sliderValue }) => {
       <Slider
         minimumValue={0}
         maximumValue={1}
+        onSlidingStart={onSlidingStart}
+        onSlidingComplete={(value) => {
+          console.log("val: ", value);
+          onSeek(value);
+        }}
         value={sliderValue}
         style={styles.slider}
-        minimumTrackTintColor="#fff"
-        maximumTrackTintColor="rgba(255, 255, 255, 0.14)"
+        minimumTrackTintColor="white"
+        maximumTrackTintColor="#b3b4b5"
+        thumbTintColor="white"
       />
     </View>
   );
@@ -42,10 +55,12 @@ const ProgressBar = ({ positionMillis, durationMillis, sliderValue }) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    backgroundColor: "green",
   },
   slider: {
     width: "100%",
+  },
+  text: {
+    color: "white",
   },
 });
 
