@@ -4,6 +4,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Reader from "../screens/reader";
 import Search from "../screens/search";
 import SearchHeader from "../shared/searchHeader";
+import ChapterSelection from "../screens/chapters";
 
 const Stack = createStackNavigator();
 export default function HomeStack({ navigation }) {
@@ -18,12 +19,10 @@ export default function HomeStack({ navigation }) {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: "white",
-          borderBottomColor: "black",
+          backgroundColor: "rgba(34, 36, 40, 1)",
         },
         headerTitleStyle: {
-          color: "black",
-          alignSelf: "center",
+          color: "white",
         },
       }}
     >
@@ -42,6 +41,13 @@ export default function HomeStack({ navigation }) {
         component={Search}
         options={{
           headerTitle: () => <SearchHeader navigation={navigation} />,
+        }}
+      />
+      <Stack.Screen
+        name="Chapter Selection"
+        component={ChapterSelection}
+        options={{
+          headerTintColor: "white",
         }}
       />
     </Stack.Navigator>

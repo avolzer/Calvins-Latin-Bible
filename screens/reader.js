@@ -19,7 +19,7 @@ import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
 import ReaderHeader from "../shared/readerHeader";
 
-export default function Reader() {
+export default function Reader({ route }) {
   const navigation = useNavigation();
 
   const playerRef = useRef();
@@ -111,6 +111,7 @@ export default function Reader() {
     return roman;
   };
   const currentChapter = psalmsData[chapter - 1];
+  console.log(currentChapter);
 
   const removeLongmarks = (text) => {
     return text
@@ -139,6 +140,9 @@ export default function Reader() {
   useEffect(() => {
     getEnglish(chapter);
   }, []);
+  useEffect(() => {
+    if (route.params && route.params.chap) setChapter(route.params.chap);
+  }, [route.params]);
 
   const getEnglish = async (ch) => {
     const API_KEY = `c3fd729feb669c03c2d4d5474409d775`;
@@ -170,9 +174,8 @@ export default function Reader() {
       headerTitle: "Hi",
     });
   }, [chapter]);
-
-  return (
-    <View style={globalStyles.mainContainer}>
+  const SettingsModal = () => {
+    return (
       <Modal
         transparent={true}
         visible={modalVisible}
@@ -280,6 +283,12 @@ export default function Reader() {
           </View>
         </View>
       </Modal>
+    );
+  };
+
+  return (
+    <View style={globalStyles.mainContainer}>
+      <SettingsModal />
       <ReaderHeader
         chapter={chapter}
         settingsHandler={() => {
@@ -295,17 +304,22 @@ export default function Reader() {
           >
             <View
               style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
                 paddingVertical: 20,
               }}
             >
               {lang === "Latin" ? (
-                <Text style={styles.chapterNum}>
-                  {showLongmarks
-                    ? currentChapter.chapterLatin
-                    : removeLongmarks(currentChapter.chapterLatin)}
-                </Text>
+                <View>
+                  <Text style={styles.chapterNum}>
+                    {showLongmarks
+                      ? currentChapter.chapterLatin
+                      : removeLongmarks(currentChapter.chapterLatin)}
+                  </Text>
+                  {currentChapter.superscription && (
+                    <Text style={{ fontSize: fontSize, fontStyle: "italic" }}>
+                      {currentChapter.superscription}
+                    </Text>
+                  )}
+                </View>
               ) : (
                 <>
                   {global.language == "English" ? (

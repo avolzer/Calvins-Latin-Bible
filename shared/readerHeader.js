@@ -31,6 +31,11 @@ export default function ReaderHeader({ chapter, settingsHandler }) {
       >
         <TouchableOpacity
           style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+          onPress={() => {
+            navigation.navigate("Chapter Selection", {
+              currentChapter: chapter,
+            });
+          }}
         >
           <Text
             style={{
