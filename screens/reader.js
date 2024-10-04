@@ -11,21 +11,16 @@ import {
 } from "react-native";
 import { globalStyles } from "../styles/global";
 import MyPlayer from "../shared/audioPlayer";
-import {
-  PanGestureHandler,
-  TouchableOpacity,
-} from "react-native-gesture-handler";
-import GestureRecognizer, {
-  swipeDirections,
-} from "react-native-swipe-gestures";
 import textData from "../assets/csvjson";
 import { MaterialIcons } from "@expo/vector-icons";
 import HTML from "react-native-render-html";
 import psalmsData from "../assets/psalms.json";
 import { Picker } from "@react-native-picker/picker";
+import { useNavigation } from "@react-navigation/native";
+import ReaderHeader from "../shared/readerHeader";
 
-export default function Reader({ route, navigation }) {
-  const { chapter, text } = route.params;
+export default function Reader() {
+  const navigation = useNavigation();
 
   const playerRef = useRef();
   const mainScrollView = useRef();
@@ -35,6 +30,7 @@ export default function Reader({ route, navigation }) {
   const toggleSwitch = () =>
     setShowLongmarks((previousState) => !previousState);
   const [modalVisible, setModalVisible] = useState(false);
+  const [chapter, setChapter] = useState(1);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("didFocus", () => {});
@@ -165,34 +161,15 @@ export default function Reader({ route, navigation }) {
         alert(error);
       });
   };
-
-  const flipChaptersForward = () => {
+  useEffect(() => {
     mainScrollView.current.scrollTo({ x: 0, y: 0, animated: false });
     const psalms = textData.filter((item) => item.ShortBook == "PSAL");
-    const chapterText = psalms.filter((item) => item.Chapter == chapter + 1);
-
-    navigation.navigate("Reader", {
-      name: "Psalm " + (chapter + 1),
-      chapter: chapter + 1,
-      text: chapterText,
+    const chapterText = psalms.filter((item) => item.Chapter == chapter);
+    getEnglish(chapter);
+    navigation.setOptions({
+      headerTitle: "Hi",
     });
-    getEnglish(chapter + 1);
-  };
-
-  const flipChaptersBack = () => {
-    mainScrollView.current.scrollTo({ x: 0, y: 0, animated: false });
-
-    const psalms = textData.filter((item) => item.ShortBook == "PSAL");
-    const chapterText = psalms.filter((item) => item.Chapter == chapter - 1);
-
-    navigation.navigate("Reader", {
-      name: "Psalm " + (chapter - 1),
-      chapter: chapter - 1,
-      text: chapterText,
-    });
-
-    getEnglish(chapter - 1);
-  };
+  }, [chapter]);
 
   return (
     <View style={globalStyles.mainContainer}>
@@ -303,48 +280,44 @@ export default function Reader({ route, navigation }) {
           </View>
         </View>
       </Modal>
+      <ReaderHeader
+        chapter={chapter}
+        settingsHandler={() => {
+          setModalVisible(true);
+        }}
+      />
       <View style={[globalStyles.container, { flex: 6 }]}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingVertical: 20,
-          }}
-        >
-          {lang === "Latin" ? (
-            <Text style={styles.chapterNum}>
-              {showLongmarks
-                ? currentChapter.chapterLatin
-                : removeLongmarks(currentChapter.chapterLatin)}
-            </Text>
-          ) : (
-            <>
-              {global.language == "English" ? (
-                <Text style={styles.chapterNum}>{chapter}</Text>
-              ) : (
-                <Text style={styles.chapterNum}>{romanizeUpper(chapter)}</Text>
-              )}
-            </>
-          )}
-          <TouchableOpacity
-            style={{ justifyContent: "center" }}
-            onPress={() => {
-              setModalVisible(true);
-            }}
-          >
-            <MaterialIcons
-              name="settings"
-              size={30}
-              color="gray"
-            ></MaterialIcons>
-          </TouchableOpacity>
-        </View>
         {lang == "Latin" ? (
           <ScrollView
             style={styles.scroll}
             showsVerticalScrollIndicator={false}
             ref={mainScrollView}
           >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingVertical: 20,
+              }}
+            >
+              {lang === "Latin" ? (
+                <Text style={styles.chapterNum}>
+                  {showLongmarks
+                    ? currentChapter.chapterLatin
+                    : removeLongmarks(currentChapter.chapterLatin)}
+                </Text>
+              ) : (
+                <>
+                  {global.language == "English" ? (
+                    <Text style={styles.chapterNum}>{chapter}</Text>
+                  ) : (
+                    <Text style={styles.chapterNum}>
+                      {romanizeUpper(chapter)}
+                    </Text>
+                  )}
+                </>
+              )}
+            </View>
             {verses}
           </ScrollView>
         ) : (
@@ -353,6 +326,31 @@ export default function Reader({ route, navigation }) {
             showsVerticalScrollIndicator={false}
             ref={mainScrollView}
           >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingVertical: 20,
+              }}
+            >
+              {lang === "Latin" ? (
+                <Text style={styles.chapterNum}>
+                  {showLongmarks
+                    ? currentChapter.chapterLatin
+                    : removeLongmarks(currentChapter.chapterLatin)}
+                </Text>
+              ) : (
+                <>
+                  {global.language == "English" ? (
+                    <Text style={styles.chapterNum}>{chapter}</Text>
+                  ) : (
+                    <Text style={styles.chapterNum}>
+                      {romanizeUpper(chapter)}
+                    </Text>
+                  )}
+                </>
+              )}
+            </View>
             <HTML
               baseFontStyle={{
                 textAlignVertical: "bottom",
@@ -369,21 +367,18 @@ export default function Reader({ route, navigation }) {
             <Text>{latinVerses}</Text>
           </ScrollView>
         )}
-
-        {/* <GestureRecognizer
-            style={{height: 100}}
-              onSwipeRight={(state) => onSwipeRight(state)}
-            >
-              <Text>{myText}</Text>
-            </GestureRecognizer> */}
       </View>
       <View style={{ flex: 1, flexDirection: "row" }}>
         <MyPlayer
           chapter={chapter}
           style={{ flex: 1 }}
           playerRef={playerRef}
-          onNext={flipChaptersForward}
-          onPrevious={flipChaptersBack}
+          onNext={() => {
+            setChapter(chapter + 1);
+          }}
+          onPrevious={() => {
+            setChapter(chapter - 1);
+          }}
         />
       </View>
     </View>

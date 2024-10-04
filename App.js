@@ -1,7 +1,6 @@
 import "./gesture-handler";
 import React from "react";
-import Contents from "./screens/toc";
-import Navigator from "./routes/drawer";
+import Navigator from "./routes/tabNav";
 
 export default function App() {
   global.language = "English";

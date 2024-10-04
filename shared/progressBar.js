@@ -40,7 +40,6 @@ const ProgressBar = ({
         maximumValue={1}
         onSlidingStart={onSlidingStart}
         onSlidingComplete={(value) => {
-          console.log("val: ", value);
           onSeek(value);
         }}
         value={sliderValue}

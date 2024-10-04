@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, View, Text, ScrollView, Button } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Audio } from "expo-av";
 import { AntDesign } from "@expo/vector-icons";
 import ProgressBar from "./progressBar";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { MaterialIcons } from "@expo/vector-icons";
 
 export default function MyPlayer(props) {

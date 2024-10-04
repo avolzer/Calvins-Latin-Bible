@@ -20,12 +20,13 @@ export const globalStyles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 25,
     marginTop: 15,
-    marginBottom: 15,
+    // marginBottom: 15,
     fontFamily: "serif",
   },
   subHeading: {
     fontSize: 18,
     fontWeight: "bold",
     fontFamily: "serif",
+    paddingTop: 24,
   },
 });
