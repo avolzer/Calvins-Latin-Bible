@@ -31,16 +31,16 @@ export default function HomeStack({ navigation }) {
         component={Reader}
         options={{
           headerShown: false,
-          // headerTitle: () => <ReaderHeader />,
-          // headerRight: () => <HomeHeader navigation={navigation} />,
         }}
-        // options={({ route }) => ({ title: route.params.name })}
       />
       <Stack.Screen
         name="Search Bar"
         component={Search}
         options={{
           headerTitle: () => <SearchHeader navigation={navigation} />,
+          headerStyle: {
+            backgroundColor: "white",
+          },
         }}
       />
       <Stack.Screen

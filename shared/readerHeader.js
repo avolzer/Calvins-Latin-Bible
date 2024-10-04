@@ -26,6 +26,24 @@ export default function ReaderHeader({ chapter, settingsHandler }) {
     >
       <View
         style={{
+          position: "absolute",
+          top: 65,
+          right: 15,
+        }}
+      >
+        <TouchableOpacity
+          style={{ justifyContent: "center" }}
+          onPress={settingsHandler}
+        >
+          <MaterialIcons
+            name="settings"
+            size={30}
+            color="white"
+          ></MaterialIcons>
+        </TouchableOpacity>
+      </View>
+      <View
+        style={{
           marginTop: 50,
         }}
       >
@@ -46,27 +64,16 @@ export default function ReaderHeader({ chapter, settingsHandler }) {
           <AntDesign style={{ color: "beige" }} name="caretdown" size={15} />
         </TouchableOpacity>
       </View>
-      {/* <View style={{ flexDirection: "row" }}> */}
-      {/* <TouchableOpacity
-          style={{ justifyContent: "center" }}
-          onPress={settingsHandler}
-        >
-          <MaterialIcons
-            name="settings"
-            size={30}
-            color="white"
-          ></MaterialIcons>
-        </TouchableOpacity> */}
+
       <View
         style={{
           position: "absolute",
           top: 60,
-          right: 10,
+          left: 10,
         }}
       >
         <SearchButton />
       </View>
-      {/* </View> */}
     </View>
   );
 }

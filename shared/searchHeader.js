@@ -25,8 +25,8 @@ export default function SearchHeader({ navigation }) {
         ref={searchInput}
         style={styles.searchBar}
         onChangeText={(text) => onChangeText(text)}
-        //value={value}
         onSubmitEditing={submitEdit}
+        autoFocus={true}
       />
     </View>
   );

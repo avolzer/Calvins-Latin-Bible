@@ -17,6 +17,7 @@ export default function Navigator() {
         inactiveColor="red"
         screenOptions={({ route }) => ({
           tabBarShowLabel: false,
+          tabBarHideOnKeyboard: true,
 
           headerShown: true,
           tabBarStyle: {

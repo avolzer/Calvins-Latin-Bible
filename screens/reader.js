@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { globalStyles } from "../styles/global";
 import MyPlayer from "../shared/audioPlayer";
-import textData from "../assets/csvjson";
 import { MaterialIcons } from "@expo/vector-icons";
 import HTML from "react-native-render-html";
 import psalmsData from "../assets/psalms.json";
@@ -167,12 +166,9 @@ export default function Reader({ route }) {
   };
   useEffect(() => {
     mainScrollView.current.scrollTo({ x: 0, y: 0, animated: false });
-    const psalms = textData.filter((item) => item.ShortBook == "PSAL");
-    const chapterText = psalms.filter((item) => item.Chapter == chapter);
+    // const psalms = textData.filter((item) => item.ShortBook == "PSAL");
+    // const chapterText = psalms.filter((item) => item.Chapter == chapter);
     getEnglish(chapter);
-    navigation.setOptions({
-      headerTitle: "Hi",
-    });
   }, [chapter]);
   const SettingsModal = () => {
     return (
