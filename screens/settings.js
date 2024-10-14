@@ -8,8 +8,15 @@ export default function Settings() {
 
   return (
     <View style={globalStyles.mainContainer}>
-      <View style={globalStyles.container}>
-        <Text>App Language</Text>
+      <View
+        style={{
+          padding: 30,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Text style={{ fontSize: 20 }}>App Language</Text>
         <Picker
           selectedValue={selectedValue}
           style={{ height: 50, width: 150 }}
