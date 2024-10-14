@@ -17,6 +17,7 @@ import psalmsData from "../assets/psalms.json";
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
 import ReaderHeader from "../shared/readerHeader";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function Reader({ route }) {
   const navigation = useNavigation();
@@ -291,6 +292,7 @@ export default function Reader({ route }) {
           setModalVisible(true);
         }}
       />
+      <LanguageToggle lang={lang} setLang={(l) => setLang(l)} />
       <View style={[globalStyles.container, { flex: 6 }]}>
         {lang == "Latin" ? (
           <ScrollView
@@ -394,6 +396,63 @@ export default function Reader({ route }) {
     </View>
   );
 }
+
+const LanguageToggle = ({ lang, setLang }) => {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignContent: "center",
+        justifyContent: "center",
+        marginTop: 12,
+      }}
+    >
+      <TouchableOpacity
+        onPress={() => {
+          setLang("Latin");
+        }}
+      >
+        <View
+          style={{
+            borderColor: "lightgray",
+            borderWidth: 1,
+            textAlignVertical: "center",
+            textAlign: "center",
+            paddingHorizontal: 20,
+            paddingVertical: 8,
+            borderTopLeftRadius: 20,
+            borderBottomLeftRadius: 20,
+            backgroundColor: lang === "Latin" ? "white" : "lightgray",
+          }}
+        >
+          <Text>Latin</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          setLang("English");
+        }}
+      >
+        <View
+          style={{
+            borderColor: "lightgray",
+            borderWidth: 1,
+            borderLeftWidth: 0,
+            textAlignVertical: "center",
+            textAlign: "center",
+            paddingHorizontal: 20,
+            paddingVertical: 8,
+            borderTopRightRadius: 20,
+            borderBottomRightRadius: 20,
+            backgroundColor: lang === "English" ? "white" : "lightgray",
+          }}
+        >
+          <Text>English</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   chapterNum: {

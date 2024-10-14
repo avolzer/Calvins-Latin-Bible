@@ -54,7 +54,7 @@ export default function Search({ navigation, route }) {
             .toLowerCase()
             .includes(removeLongmarks(search_term).toLowerCase())
         ) {
-          results.push(renderResult(v, idx, ch.chapter));
+          results.push(renderResult(v, idx + 1, ch.chapter));
         }
       });
     });
