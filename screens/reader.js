@@ -1,14 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  Modal,
-  Pressable,
-  Switch,
-  Button,
-} from "react-native";
+import React, { useState, useEffect, useRef, useContext } from "react";
+import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { globalStyles } from "../styles/global";
 import MyPlayer from "../shared/audioPlayer";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -18,15 +9,19 @@ import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
 import ReaderHeader from "../shared/readerHeader";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { SettingsContext } from "../context/settingsContext";
+import ESVpsalms from "../assets/ESV-psalms.json";
 
 export default function Reader({ route }) {
   const navigation = useNavigation();
+
+  const { appLanguage, showLongmarks, fontSize, translation } =
+    useContext(SettingsContext);
 
   const playerRef = useRef();
   const mainScrollView = useRef();
 
   const [lang, setLang] = useState("Latin");
-  const [showLongmarks, setShowLongmarks] = useState(true);
   const toggleSwitch = () =>
     setShowLongmarks((previousState) => !previousState);
   const [modalVisible, setModalVisible] = useState(false);
@@ -37,7 +32,6 @@ export default function Reader({ route }) {
     return unsubscribe;
   }, [navigation]);
 
-  const fontSize = 20;
   const superFontSize = Math.floor(fontSize * 0.6);
 
   const superlineHeight = superFontSize * 1.1;
@@ -52,7 +46,7 @@ export default function Reader({ route }) {
   const regular = {
     textAlignVertical: "bottom",
     fontSize: fontSize,
-    lineHeight: 35,
+    lineHeight: parseInt(fontSize + fontSize * 1.2, 10),
     fontFamily: "serif",
   };
 
@@ -111,7 +105,6 @@ export default function Reader({ route }) {
     return roman;
   };
   const currentChapter = psalmsData[chapter - 1];
-  console.log(currentChapter);
 
   const removeLongmarks = (text) => {
     return text
@@ -134,12 +127,48 @@ export default function Reader({ route }) {
       </View>
     );
   }
+  const getESVsubheading = () => {
+    var subheading = "";
+    const firstVerse = ESVpsalms.filter(
+      (verse) => verse.chapter == chapter
+    ).find((verse) => verse.verse == "1").text;
+    if (firstVerse.startsWith("<subheading>")) {
+      subheading = firstVerse.substring(
+        firstVerse.indexOf("<subheading>") + 12,
+        firstVerse.lastIndexOf("</subheading>")
+      );
+    }
+    return subheading;
+  };
+  const getESVtext = () => {
+    const currentChapter = ESVpsalms.filter(
+      (verse) => verse.chapter == chapter
+    );
+    var verses = "";
+    var subheading = "";
+
+    currentChapter.forEach((verse) => {
+      var text = verse.text
+        .replace("§", "\n")
+        .replaceAll("¶", "\n")
+        .replaceAll("→", "\t\t");
+      if (verse.verse == "1") {
+        if (text.startsWith("<subheading>")) {
+          text = text.substring(text.lastIndexOf("</subheading>") + 13);
+        }
+        text = text.trimStart();
+      }
+      verses += text;
+    });
+    return verses;
+  };
 
   const [latinVerses, setLatinVerses] = useState("<p></p>");
 
   useEffect(() => {
     getEnglish(chapter);
   }, []);
+
   useEffect(() => {
     if (route.params && route.params.chap) setChapter(route.params.chap);
   }, [route.params]);
@@ -167,125 +196,11 @@ export default function Reader({ route }) {
   };
   useEffect(() => {
     mainScrollView.current.scrollTo({ x: 0, y: 0, animated: false });
-    // const psalms = textData.filter((item) => item.ShortBook == "PSAL");
-    // const chapterText = psalms.filter((item) => item.Chapter == chapter);
     getEnglish(chapter);
   }, [chapter]);
-  const SettingsModal = () => {
-    return (
-      <Modal
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View
-              style={{
-                width: "100%",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                padding: 18,
-                borderBottomWidth: 1,
-                borderBottomColor: "gray",
-              }}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <MaterialIcons name="settings" size={20} />
-                <Text
-                  style={{
-                    marginLeft: 8,
-                    fontSize: 20,
-                    fontFamily: "serif",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Settings
-                </Text>
-              </View>
-              <Pressable
-                style={{ justifyContent: "center" }}
-                onPress={() => {
-                  setModalVisible(false);
-                }}
-              >
-                <MaterialIcons
-                  name="close"
-                  size={30}
-                  color="gray"
-                ></MaterialIcons>
-              </Pressable>
-            </View>
-            <View style={{ width: "100%", padding: 24 }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  width: "100%",
-                }}
-              >
-                <Text
-                  style={{
-                    alignContent: "center",
-                    fontSize: 16,
-                    fontFamily: "serif",
-                  }}
-                >
-                  Show long marks
-                </Text>
-                <Switch
-                  style={{ flex: 1 }}
-                  trackColor={{ false: "#767577", true: "#81b0ff" }}
-                  thumbColor={showLongmarks ? "#f5dd4b" : "#f4f3f4"}
-                  // ios_backgroundColor="#3e3e3e"
-                  onValueChange={toggleSwitch}
-                  value={showLongmarks}
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-around",
-                }}
-              >
-                <Text style={{ fontSize: 16, flex: 1, fontFamily: "serif" }}>
-                  Text Language
-                </Text>
-                <Picker
-                  selectedValue={lang}
-                  style={{ height: 50, width: 150 }}
-                  onValueChange={(itemValue) => {
-                    setLang(itemValue);
-                  }}
-                >
-                  <Picker.Item label="Latin" value="Latin" />
-
-                  <Picker.Item label="English" value="English" />
-                </Picker>
-              </View>
-              <View style={{ paddingTop: 20 }}>
-                <Button
-                  onPress={() => {
-                    setModalVisible(false);
-                  }}
-                  title="Done"
-                  color="blue"
-                  accessibilityLabel="Close the modal"
-                ></Button>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
-    );
-  };
 
   return (
     <View style={globalStyles.mainContainer}>
-      <SettingsModal />
       <ReaderHeader
         chapter={chapter}
         settingsHandler={() => {
@@ -320,7 +235,7 @@ export default function Reader({ route }) {
                 </View>
               ) : (
                 <>
-                  {global.language == "English" ? (
+                  {appLanguage == "English" ? (
                     <Text style={styles.chapterNum}>{chapter}</Text>
                   ) : (
                     <Text style={styles.chapterNum}>
@@ -333,51 +248,68 @@ export default function Reader({ route }) {
             {verses}
           </ScrollView>
         ) : (
-          <ScrollView
-            style={styles.scroll}
-            showsVerticalScrollIndicator={false}
-            ref={mainScrollView}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingVertical: 20,
-              }}
-            >
-              {lang === "Latin" ? (
-                <Text style={styles.chapterNum}>
-                  {showLongmarks
-                    ? currentChapter.chapterLatin
-                    : removeLongmarks(currentChapter.chapterLatin)}
-                </Text>
-              ) : (
-                <>
-                  {global.language == "English" ? (
-                    <Text style={styles.chapterNum}>{chapter}</Text>
-                  ) : (
+          <>
+            {translation == "KJV" ? (
+              <ScrollView
+                style={styles.scroll}
+                showsVerticalScrollIndicator={false}
+                ref={mainScrollView}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    paddingVertical: 20,
+                  }}
+                >
+                  {lang === "Latin" ? (
                     <Text style={styles.chapterNum}>
-                      {romanizeUpper(chapter)}
+                      {showLongmarks
+                        ? currentChapter.chapterLatin
+                        : removeLongmarks(currentChapter.chapterLatin)}
+                    </Text>
+                  ) : (
+                    <>
+                      {appLanguage == "English" ? (
+                        <Text style={styles.chapterNum}>{chapter}</Text>
+                      ) : (
+                        <Text style={styles.chapterNum}>
+                          {romanizeUpper(chapter)}
+                        </Text>
+                      )}
+                    </>
+                  )}
+                </View>
+                <HTML
+                  baseFontStyle={{
+                    textAlignVertical: "bottom",
+                    fontSize: fontSize,
+                    lineHeight: parseInt(fontSize + fontSize * 1.2, 10),
+                    color: "black",
+                    fontFamily: "serif",
+                  }}
+                  classesStyles={{
+                    v: { fontSize: superFontSize },
+                  }}
+                  source={{ html: latinVerses }}
+                />
+              </ScrollView>
+            ) : (
+              <ScrollView ref={mainScrollView}>
+                <View style={{ paddingVertical: 20 }}>
+                  <Text style={styles.chapterNum}>Psalm {chapter}</Text>
+                  {getESVsubheading() && (
+                    <Text style={{ fontSize: fontSize, fontStyle: "italic" }}>
+                      {getESVsubheading()}
                     </Text>
                   )}
-                </>
-              )}
-            </View>
-            <HTML
-              baseFontStyle={{
-                textAlignVertical: "bottom",
-                fontSize: fontSize,
-                lineHeight: 35,
-                color: "black",
-                fontFamily: "serif",
-              }}
-              classesStyles={{
-                v: { textAlignVertical: "top", fontSize: superFontSize },
-              }}
-              source={{ html: latinVerses }}
-            />
-            <Text>{latinVerses}</Text>
-          </ScrollView>
+                  <View style={{ paddingTop: 20 }}>
+                    <Text style={regular}>{getESVtext()}</Text>
+                  </View>
+                </View>
+              </ScrollView>
+            )}
+          </>
         )}
       </View>
       <View style={{ flex: 1, flexDirection: "row" }}>
@@ -461,6 +393,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     fontWeight: "bold",
   },
+
   scroll: {
     flex: 5,
   },
