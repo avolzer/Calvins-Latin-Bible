@@ -5,12 +5,8 @@ import SearchButton from "./searchButton";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 
-export default function ReaderHeader({ chapter, settingsHandler }) {
+export default function ReaderHeader({ chapter }) {
   const navigation = useNavigation();
-
-  const pressHandler = () => {
-    navigation.navigate("Search Bar", { search_term: "" });
-  };
 
   return (
     <View
@@ -26,24 +22,6 @@ export default function ReaderHeader({ chapter, settingsHandler }) {
     >
       <View
         style={{
-          position: "absolute",
-          top: 65,
-          right: 15,
-        }}
-      >
-        <TouchableOpacity
-          style={{ justifyContent: "center" }}
-          onPress={settingsHandler}
-        >
-          <MaterialIcons
-            name="settings"
-            size={30}
-            color="white"
-          ></MaterialIcons>
-        </TouchableOpacity>
-      </View>
-      <View
-        style={{
           marginTop: 50,
         }}
       >
@@ -52,6 +30,7 @@ export default function ReaderHeader({ chapter, settingsHandler }) {
           onPress={() => {
             navigation.navigate("Chapter Selection", {
               currentChapter: chapter,
+              currentBook: "Psalms",
             });
           }}
         >

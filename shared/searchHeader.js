@@ -15,7 +15,6 @@ export default function SearchHeader({ navigation }) {
   const [value, onChangeText] = useState("");
 
   const submitEdit = () => {
-    console.log(value);
     navigation.navigate("Search Bar", { search_term: value });
   };
 

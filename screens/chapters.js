@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,16 +6,82 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { globalStyles } from "../styles/global";
 import { useNavigation } from "@react-navigation/native";
+import { SettingsContext } from "../context/settingsContext";
 
 export default function ChapterSelection({ route }) {
   const { currentChapter } = route.params;
+  const { currentBook } = route.params;
+  const settings = useContext(SettingsContext);
   const navigation = useNavigation();
+
+  const [selected, setSelected] = useState("chapters");
+  const [selectedBook, setSelectedBook] = useState(currentBook);
+  const [testament, setTestament] = useState("Old");
+
+  useEffect(() => {
+    navigation.setOptions({ headerTitle: currentBook });
+  }, []);
+
   var chapters = [];
   for (var i = 1; i <= 150; i++) {
     chapters.push(i);
   }
+  const AvailableBooks = ["Psalms"];
+  const ComingSoonOT = [
+    "Genesis",
+    "Exodus",
+    "Leviticus",
+    "Numbers",
+    "Deuteronomy",
+    "Joshua",
+    "I Samuel",
+    "Job",
+    "Psalms",
+    "Isaiah",
+    "Jeremiah",
+    "Lamentations",
+    "Ezekiel",
+    "Daniel",
+    "Hosea",
+    "Joel",
+    "Amos",
+    "Obadiah",
+    "Jonah",
+    "Micah",
+    "Nahum",
+    "Habakuk",
+    "Zephaniah",
+    "Haggai",
+    "Zachariah",
+    "Malachi",
+  ];
+  const ComingSoonNT = [
+    "Matthew",
+    "Mark",
+    "Luke",
+    "John",
+    "Acts",
+    "Romans",
+    "I Corinthians",
+    "II Corinthians",
+    "Galatians",
+    "Ephesians",
+    "Philippians",
+    "Colossians",
+    "I Thessalonians",
+    "II Thessalonians",
+    "I Timothy",
+    "II Timothy",
+    "Titus",
+    "Philemon",
+    "Hebrews",
+    "James",
+    "I Peter",
+    "II Peter",
+    "I John",
+    "Jude",
+  ];
 
   const pressHandler = (ch) => {
     navigation.navigate("Reader", {
@@ -60,7 +126,7 @@ export default function ChapterSelection({ route }) {
             pressHandler(item);
           }}
         >
-          {global.language == "English" ? (
+          {settings.appLanguage == "English" ? (
             <Text
               style={{
                 ...styles.numbers,
@@ -81,10 +147,192 @@ export default function ChapterSelection({ route }) {
     );
   });
   return (
-    <View style={{ flex: 1, paddingVertical: 30, paddingHorizontal: 10 }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.grid}>{chapterButtons}</View>
-      </ScrollView>
+    <View style={{ flex: 1, paddingTop: 30 }}>
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity
+          style={[
+            styles.tab,
+            {
+              borderBottomWidth: selected === "books" ? 1 : 0,
+            },
+          ]}
+          onPress={() => {
+            setSelected("books");
+            navigation.setOptions({ headerTitle: " " });
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              color: selected === "books" ? "black" : "gray",
+            }}
+          >
+            Book
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.tab,
+            {
+              borderBottomWidth: selected === "chapters" ? 1 : 0,
+            },
+          ]}
+          onPress={() => {
+            setSelected("chapters");
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              color: selected === "chapters" ? "black" : "gray",
+            }}
+          >
+            Chapter
+          </Text>
+        </TouchableOpacity>
+      </View>
+      {selected === "books" ? (
+        <View style={{ flex: 1 }}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{
+              paddingHorizontal: 30,
+              marginTop: 20,
+            }}
+          >
+            {testament == "Old" ? (
+              <>
+                <Text style={styles.subheading}>Available </Text>
+                {AvailableBooks.map((book) => {
+                  return (
+                    <TouchableOpacity
+                      key={book}
+                      style={styles.listItem}
+                      onPress={() => {
+                        setSelectedBook(book);
+                        setSelected("chapters");
+                        navigation.setOptions({ headerTitle: book });
+                      }}
+                    >
+                      <Text
+                        style={[
+                          styles.listItemText,
+                          {
+                            color: currentBook == book ? "blue" : "black",
+                            textDecorationLine:
+                              currentBook == book ? "underline" : "none",
+                          },
+                        ]}
+                      >
+                        {book}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+                <Text style={[styles.subheading, { marginTop: 20 }]}>
+                  Coming Soon{" "}
+                </Text>
+                {ComingSoonOT.map((book) => {
+                  return (
+                    <View key={book} style={styles.listItem}>
+                      <Text style={[styles.listItemText, { color: "gray" }]}>
+                        {book}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                <Text style={styles.subheading}>Coming Soon </Text>
+                {ComingSoonNT.map((book) => {
+                  return (
+                    <View key={book} style={styles.listItem}>
+                      <Text style={[styles.listItemText, { color: "gray" }]}>
+                        {book}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </>
+            )}
+          </ScrollView>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              // borderTopWidth: 1,
+              // borderColor: "gray",
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                setTestament("Old");
+              }}
+              style={[
+                styles.testament,
+                {
+                  borderRightWidth: 1,
+                  borderColor: "gray",
+                  borderTopWidth: testament == "Old" ? 0 : 1,
+                },
+              ]}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: testament == "Old" ? "black" : "gray",
+                }}
+              >
+                Old
+              </Text>
+              <Text
+                style={{
+                  fontSize: 16,
+
+                  color: testament == "Old" ? "black" : "gray",
+                }}
+              >
+                Testament
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setTestament("New");
+              }}
+              style={[
+                styles.testament,
+                {
+                  borderTopWidth: testament == "New" ? 0 : 1,
+                },
+              ]}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+
+                  color: testament == "New" ? "black" : "gray",
+                }}
+              >
+                New
+              </Text>
+              <Text
+                style={{
+                  fontSize: 16,
+
+                  color: testament == "New" ? "black" : "gray",
+                }}
+              >
+                Testament
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.grid}>{chapterButtons}</View>
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -100,11 +348,30 @@ const styles = StyleSheet.create({
     width: "100%",
     flexWrap: "wrap",
     flexDirection: "row",
-    // backgroundColor: 'blue',
     justifyContent: "center",
   },
   wrapper: {
     alignItems: "center",
     width: 80,
+  },
+  tab: {
+    borderColor: "blue",
+    paddingHorizontal: 10,
+    marginLeft: 20,
+    paddingBottom: 15,
+  },
+  listItem: {
+    paddingVertical: 15,
+  },
+  listItemText: {
+    fontSize: 18,
+  },
+  subheading: {
+    color: "black",
+  },
+  testament: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: 15,
   },
 });
