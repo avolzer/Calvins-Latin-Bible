@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import SearchButton from "./searchButton";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import { SettingsContext } from "../context/settingsContext";
+import "../assets/i18n/i18n";
+import { useTranslation } from "react-i18next";
+import { romanizeNumeral } from "../tools/romanizeNumeral";
 
-export default function ReaderHeader({ chapter }) {
+export default function ReaderHeader({ chapter, book }) {
   const navigation = useNavigation();
+  const { t, i18n } = useTranslation();
+  const { appLanguage } = useContext(SettingsContext);
 
   return (
     <View
@@ -30,7 +36,7 @@ export default function ReaderHeader({ chapter }) {
           onPress={() => {
             navigation.navigate("Chapter Selection", {
               currentChapter: chapter,
-              currentBook: "Psalms",
+              currentBook: book,
             });
           }}
         >
@@ -39,7 +45,9 @@ export default function ReaderHeader({ chapter }) {
               color: "white",
               fontSize: 25,
             }}
-          >{`Psalm ${chapter}`}</Text>
+          >{`${t(book)} ${
+            appLanguage == "English" ? chapter : romanizeNumeral(chapter)
+          }`}</Text>
           <AntDesign style={{ color: "beige" }} name="caretdown" size={15} />
         </TouchableOpacity>
       </View>

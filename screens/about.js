@@ -25,8 +25,9 @@ export default function About() {
           This edition was originally prepared by Dr. Richard Wevers, emeritus
           Prof. of Classics at Calvin College, based on the work of the late
           Ford Lewis Battles. The whole of it appeared as a hardbound, handheld
-          “Calvin’s Bible” from Dr. Wever’s own Digamma Publishers. A very
-          limited run of these was released and they are now rare items.
+          “Calvin’s Bible” from Dr. Wever’s own Digamma Publishers (Grand
+          Rapids, MI). A very limited run of these was released and they are now
+          rare items.
         </Text>
         <Text style={globalStyles.subHeading}>Note on pronunciation</Text>
         <Text style={globalStyles.paragraph}>
@@ -37,6 +38,23 @@ export default function About() {
           what Latin sounded like in the Golden Age of Rome. This is the
           pronunciation used in this work with as much consistency and
           expressiveness as the reader could manage.
+        </Text>
+        <Text style={globalStyles.paragraph}>
+          The text itself and the natural quantities of each of the vowels were
+          carefully researched and applied, using the dictionaries of Lewis and
+          Short, DuCange, Gaffiot, etc. We welcome all feedback, especially if
+          any errors have been discovered. Please send them to:
+          info@latinperdiem.com.
+        </Text>
+        <Text style={globalStyles.paragraph}>
+          The following individuals contributed their time and expertise to this
+          project and are gratefully acknowledged. {`\n\n`}Joan Crist (research
+          supervisor){`\n\n`} Mishka Fernando (audio engineer) {`\n\n`}Natalie
+          Mouw (research assistant) {`\n\n`}Jillian Noe (research assistant)
+          {`\n\n`} David Noe (audio recordings, project supervisor){`\n\n`}{" "}
+          Patrick Owens (Latin consultant)
+          {`\n\n`}Joseph Tipton (Latin consultant) {`\n\n`}April Volzer
+          (programmer){`\n\n`} SOLI DEO GLORIA
         </Text>
       </ScrollView>
     </View>

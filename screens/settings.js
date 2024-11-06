@@ -1,8 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { StyleSheet, View, Text, Switch } from "react-native";
 import { globalStyles } from "../styles/global";
 import { Picker } from "@react-native-picker/picker";
 import { SettingsContext } from "../context/settingsContext";
+import { useNavigation } from "@react-navigation/native";
+import "../assets/i18n/i18n";
+import { useTranslation } from "react-i18next";
 
 export default function Settings() {
   const {
@@ -16,32 +19,40 @@ export default function Settings() {
     setTranslation,
   } = useContext(SettingsContext);
 
+  const navigation = useNavigation();
+  const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    navigation.setOptions({ headerTitle: t("Settings") });
+  }, [appLanguage]);
+
   return (
     <View style={globalStyles.mainContainer}>
       <View style={styles.container}>
-        <Text style={styles.label}>App Preferences</Text>
+        <Text style={styles.label}>{t("App Preferences")}</Text>
         <View style={styles.section}>
           <View style={styles.row}>
-            <Text style={styles.text}>App Language</Text>
+            <Text style={styles.text}>{t("App Language")}</Text>
             <View style={styles.pickerContainer}>
               <Picker
                 selectedValue={appLanguage}
                 style={{ width: 150 }}
                 onValueChange={(itemValue) => {
+                  i18n.changeLanguage(itemValue);
                   setAppLanguage(itemValue);
                 }}
               >
-                <Picker.Item label="English" value="English" />
-                <Picker.Item label="Latin" value="Latin" />
+                <Picker.Item label={t("English")} value="en" />
+                <Picker.Item label={t("Latin")} value="ltn" />
               </Picker>
             </View>
           </View>
         </View>
-        <Text style={styles.label}>Text Settings</Text>
+        <Text style={styles.label}>{t("Text Settings")}</Text>
 
         <View style={styles.section}>
           <View style={styles.row}>
-            <Text style={styles.text}>Show long marks</Text>
+            <Text style={styles.text}>{t("Show long marks")}</Text>
             <Switch
               style={{ flex: 1 }}
               trackColor={{ false: "#767577", true: "#81b0ff" }}
@@ -56,7 +67,7 @@ export default function Settings() {
           <View
             style={[styles.row, { borderTopWidth: 1, borderColor: "gray" }]}
           >
-            <Text style={styles.text}>Font Size</Text>
+            <Text style={styles.text}>{t("Font Size")}</Text>
             <View style={styles.pickerContainer}>
               <Picker
                 selectedValue={fontSize}
@@ -65,17 +76,17 @@ export default function Settings() {
                   setFontSize(itemValue);
                 }}
               >
-                <Picker.Item label="Small" value={14} />
-                <Picker.Item label="Regular" value={20} />
-                <Picker.Item label="Large" value={24} />
-                <Picker.Item label="Extra Large" value={30} />
+                <Picker.Item label={t("Small")} value={14} />
+                <Picker.Item label={t("Regular")} value={20} />
+                <Picker.Item label={t("Large")} value={24} />
+                <Picker.Item label={t("Extra Large")} value={30} />
               </Picker>
             </View>
           </View>
           <View
             style={[styles.row, { borderTopWidth: 1, borderColor: "gray" }]}
           >
-            <Text style={styles.text}>English Translation</Text>
+            <Text style={styles.text}>{t("English Translation")}</Text>
             <View style={styles.pickerContainer}>
               <Picker
                 selectedValue={translation}

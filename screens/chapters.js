@@ -8,19 +8,25 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SettingsContext } from "../context/settingsContext";
+import "../assets/i18n/i18n";
+import { useTranslation } from "react-i18next";
+import { romanizeNumeral } from "../tools/romanizeNumeral";
 
 export default function ChapterSelection({ route }) {
   const { currentChapter } = route.params;
   const { currentBook } = route.params;
   const settings = useContext(SettingsContext);
   const navigation = useNavigation();
+  const { t, i18n } = useTranslation();
 
   const [selected, setSelected] = useState("chapters");
   const [selectedBook, setSelectedBook] = useState(currentBook);
   const [testament, setTestament] = useState("Old");
 
   useEffect(() => {
-    navigation.setOptions({ headerTitle: currentBook });
+    let book = currentBook;
+    if (currentBook == "Psalm") book = "Psalms";
+    navigation.setOptions({ headerTitle: t(book) });
   }, []);
 
   var chapters = [];
@@ -90,38 +96,20 @@ export default function ChapterSelection({ route }) {
     });
   };
 
-  const romanize = (num) => {
-    var lookup = {
-        M: 1000,
-        CM: 900,
-        D: 500,
-        CD: 400,
-        C: 100,
-        XC: 90,
-        L: 50,
-        XL: 40,
-        X: 10,
-        IX: 9,
-        V: 5,
-        IV: 4,
-        I: 1,
-      },
-      roman = "",
-      i;
-    for (i in lookup) {
-      while (num >= lookup[i]) {
-        roman += i;
-        num -= lookup[i];
-      }
-    }
-    return roman;
-  };
-
   let chapterButtons = chapters.map((item, index) => {
     return (
-      <View key={index} style={styles.wrapper}>
+      <View
+        key={index}
+        style={[
+          styles.wrapper,
+          { width: settings.appLanguage == "English" ? 80 : 100 },
+        ]}
+      >
         <TouchableOpacity
-          style={styles.button}
+          style={[
+            styles.button,
+            { paddingHorizontal: settings.appLanguage == "English" ? 20 : 10 },
+          ]}
           onPress={() => {
             pressHandler(item);
           }}
@@ -140,7 +128,7 @@ export default function ChapterSelection({ route }) {
               {item}
             </Text>
           ) : (
-            <Text style={styles.numbers}>{romanize(item)}</Text>
+            <Text style={styles.numbers}>{romanizeNumeral(item)}</Text>
           )}
         </TouchableOpacity>
       </View>
@@ -167,7 +155,7 @@ export default function ChapterSelection({ route }) {
               color: selected === "books" ? "black" : "gray",
             }}
           >
-            Book
+            {t("Book")}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -187,7 +175,7 @@ export default function ChapterSelection({ route }) {
               color: selected === "chapters" ? "black" : "gray",
             }}
           >
-            Chapter
+            {t("Chapter")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -211,32 +199,39 @@ export default function ChapterSelection({ route }) {
                       onPress={() => {
                         setSelectedBook(book);
                         setSelected("chapters");
-                        navigation.setOptions({ headerTitle: book });
+                        navigation.setOptions({ headerTitle: t(book) });
                       }}
                     >
                       <Text
                         style={[
                           styles.listItemText,
                           {
-                            color: currentBook == book ? "blue" : "black",
+                            color:
+                              currentBook == book ||
+                              (currentBook == "Psalm" && book == "Psalms")
+                                ? "blue"
+                                : "black",
                             textDecorationLine:
-                              currentBook == book ? "underline" : "none",
+                              currentBook == book ||
+                              (currentBook == "Psalm" && book == "Psalms")
+                                ? "underline"
+                                : "none",
                           },
                         ]}
                       >
-                        {book}
+                        {t(book)}
                       </Text>
                     </TouchableOpacity>
                   );
                 })}
                 <Text style={[styles.subheading, { marginTop: 20 }]}>
-                  Coming Soon{" "}
+                  {t("Coming Soon")}
                 </Text>
                 {ComingSoonOT.map((book) => {
                   return (
                     <View key={book} style={styles.listItem}>
                       <Text style={[styles.listItemText, { color: "gray" }]}>
-                        {book}
+                        {t(book)}
                       </Text>
                     </View>
                   );
@@ -244,12 +239,12 @@ export default function ChapterSelection({ route }) {
               </>
             ) : (
               <>
-                <Text style={styles.subheading}>Coming Soon </Text>
+                <Text style={styles.subheading}>{t("Coming Soon")} </Text>
                 {ComingSoonNT.map((book) => {
                   return (
                     <View key={book} style={styles.listItem}>
                       <Text style={[styles.listItemText, { color: "gray" }]}>
-                        {book}
+                        {t(book)}
                       </Text>
                     </View>
                   );
@@ -284,7 +279,7 @@ export default function ChapterSelection({ route }) {
                   color: testament == "Old" ? "black" : "gray",
                 }}
               >
-                Old
+                {t("Old")}
               </Text>
               <Text
                 style={{
@@ -293,7 +288,7 @@ export default function ChapterSelection({ route }) {
                   color: testament == "Old" ? "black" : "gray",
                 }}
               >
-                Testament
+                {t("Testament")}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -314,7 +309,7 @@ export default function ChapterSelection({ route }) {
                   color: testament == "New" ? "black" : "gray",
                 }}
               >
-                New
+                {t("New")}
               </Text>
               <Text
                 style={{
@@ -323,7 +318,7 @@ export default function ChapterSelection({ route }) {
                   color: testament == "New" ? "black" : "gray",
                 }}
               >
-                Testament
+                {t("Testament")}
               </Text>
             </TouchableOpacity>
           </View>
