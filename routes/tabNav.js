@@ -72,7 +72,7 @@ export default function Navigator() {
             headerStyle: {
               backgroundColor: "rgba(34, 36, 40, 1)",
             },
-            tabBarIcon: ({ focused, color, size }) => {
+            tabBarIcon: ({ focused }) => {
               return (
                 <FontAwesome
                   name="gear"

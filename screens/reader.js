@@ -2,19 +2,20 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { globalStyles } from "../styles/global";
 import MyPlayer from "../shared/audioPlayer";
-import { MaterialIcons } from "@expo/vector-icons";
 import HTML from "react-native-render-html";
 import psalmsData from "../assets/psalms.json";
-import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native";
 import ReaderHeader from "../shared/readerHeader";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SettingsContext } from "../context/settingsContext";
 import ESVpsalms from "../assets/ESV-psalms.json";
 import KJVbible from "../assets/kjv.json";
+import "../assets/i18n/i18n";
+import { useTranslation } from "react-i18next";
 
 export default function Reader({ route }) {
   const navigation = useNavigation();
+  const { t, i18n } = useTranslation();
 
   const { appLanguage, showLongmarks, fontSize, translation } =
     useContext(SettingsContext);
@@ -23,6 +24,7 @@ export default function Reader({ route }) {
   const mainScrollView = useRef();
 
   const [lang, setLang] = useState("Latin");
+  const [currentBook, setCurrentBook] = useState("Psalm");
   const toggleSwitch = () =>
     setShowLongmarks((previousState) => !previousState);
   const [modalVisible, setModalVisible] = useState(false);
@@ -50,34 +52,6 @@ export default function Reader({ route }) {
     fontSize: fontSize,
     lineHeight: parseInt(fontSize + fontSize * 1.2, 10),
     fontFamily: "serif",
-  };
-
-  // taken from a comment on http://blog.stevenlevithan.com/archives/javascript-roman-numeral-converter
-  const romanizeLower = (num) => {
-    var lookup = {
-        m: 1000,
-        cm: 900,
-        d: 500,
-        cd: 400,
-        c: 100,
-        xc: 90,
-        l: 50,
-        xl: 40,
-        x: 10,
-        ix: 9,
-        v: 5,
-        iv: 4,
-        i: 1,
-      },
-      roman = "",
-      i;
-    for (i in lookup) {
-      while (num >= lookup[i]) {
-        roman += i;
-        num -= lookup[i];
-      }
-    }
-    return roman;
   };
 
   const romanizeUpper = (num) => {
@@ -249,11 +223,12 @@ export default function Reader({ route }) {
     <View style={globalStyles.mainContainer}>
       <ReaderHeader
         chapter={chapter}
+        book={currentBook}
         settingsHandler={() => {
           setModalVisible(true);
         }}
       />
-      <LanguageToggle lang={lang} setLang={(l) => setLang(l)} />
+      <LanguageToggle lang={lang} setLang={(l) => setLang(l)} t={t} />
       <View style={[globalStyles.container, { flex: 6 }]}>
         {lang == "Latin" ? (
           <ScrollView
@@ -363,7 +338,7 @@ export default function Reader({ route }) {
   );
 }
 
-const LanguageToggle = ({ lang, setLang }) => {
+const LanguageToggle = ({ lang, setLang, t }) => {
   return (
     <View
       style={{
@@ -391,7 +366,7 @@ const LanguageToggle = ({ lang, setLang }) => {
             backgroundColor: lang === "Latin" ? "white" : "lightgray",
           }}
         >
-          <Text>Latin</Text>
+          <Text>{t("Latin")}</Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity
@@ -413,7 +388,7 @@ const LanguageToggle = ({ lang, setLang }) => {
             backgroundColor: lang === "English" ? "white" : "lightgray",
           }}
         >
-          <Text>English</Text>
+          <Text>{t("English")}</Text>
         </View>
       </TouchableOpacity>
     </View>
