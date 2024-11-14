@@ -9,6 +9,7 @@ import ReaderHeader from "../shared/readerHeader";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { SettingsContext } from "../context/settingsContext";
 import ESVpsalms from "../assets/ESV-psalms.json";
+import KJVbible from "../assets/kjv.json";
 import "../assets/i18n/i18n";
 import { useTranslation } from "react-i18next";
 
@@ -41,8 +42,9 @@ export default function Reader({ route }) {
   const superScript = {
     textAlignVertical: "top",
     fontSize: superFontSize,
-    lineHeight: superlineHeight,
+    lineHeight: parseInt(fontSize + fontSize * 1.2, 10),
     fontFamily: "serif",
+    paddingRight: 10,
   };
 
   const regular = {
@@ -118,8 +120,7 @@ export default function Reader({ route }) {
     const currentChapter = ESVpsalms.filter(
       (verse) => verse.chapter == chapter
     );
-    var verses = "";
-    var subheading = "";
+    var verses = [];
 
     currentChapter.forEach((verse) => {
       var text = verse.text
@@ -132,9 +133,54 @@ export default function Reader({ route }) {
         }
         text = text.trimStart();
       }
-      verses += text;
+      verses.push(text);
     });
-    return verses;
+    return currentChapter.map((verse) => {
+      var text = verse.text
+        .replace("§", "\n")
+        .replace("¶", "")
+        .replaceAll("¶", "\n")
+        .replaceAll("→", "\t\t");
+      if (verse.verse == "1") {
+        if (text.startsWith("<subheading>")) {
+          text = text.substring(text.lastIndexOf("</subheading>") + 13);
+        }
+        text = text.trimStart();
+      }
+      var newParagraph = false;
+      if (text.startsWith("\n")) newParagraph = true;
+
+      return (
+        <View style={{ flexDirection: "row" }} key={verse.passage}>
+          <Text style={superScript}>
+            {newParagraph ? `\n${verse.verse}` : verse.verse}
+          </Text>
+          <Text style={regular}>{text}</Text>
+        </View>
+      );
+    });
+  };
+
+  const getKJVtext = () => {
+    const currentChapter = KJVbible.verses
+      .filter((verse) => verse.book_name == "Psalms")
+      .filter((verse) => verse.chapter == chapter);
+
+    var verses = "";
+    currentChapter.forEach((verse) => {
+      verses += verse.text;
+    });
+
+    return currentChapter.map((verse) => {
+      var text = verse.text.replace("¶", "");
+
+      return (
+        <View style={{ flexDirection: "row" }} key={verse.passage}>
+          <Text style={[superScript, { flexWrap: "wrap" }]}>{verse.verse}</Text>
+          <Text style={regular}>{text}</Text>
+        </View>
+      );
+    });
   };
 
   const [latinVerses, setLatinVerses] = useState("<p></p>");
@@ -255,19 +301,7 @@ export default function Reader({ route }) {
                     </>
                   )}
                 </View>
-                <HTML
-                  baseFontStyle={{
-                    textAlignVertical: "bottom",
-                    fontSize: fontSize,
-                    lineHeight: parseInt(fontSize + fontSize * 1.2, 10),
-                    color: "black",
-                    fontFamily: "serif",
-                  }}
-                  classesStyles={{
-                    v: { fontSize: superFontSize },
-                  }}
-                  source={{ html: latinVerses }}
-                />
+                <View style={{ paddingRight: 20 }}>{getKJVtext()}</View>
               </ScrollView>
             ) : (
               <ScrollView ref={mainScrollView}>
@@ -278,8 +312,8 @@ export default function Reader({ route }) {
                       {getESVsubheading()}
                     </Text>
                   )}
-                  <View style={{ paddingTop: 20 }}>
-                    <Text style={regular}>{getESVtext()}</Text>
+                  <View style={{ paddingTop: 20, paddingRight: 20 }}>
+                    {getESVtext()}
                   </View>
                 </View>
               </ScrollView>
