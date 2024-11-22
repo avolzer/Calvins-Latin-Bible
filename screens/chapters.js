@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ export default function ChapterSelection({ route }) {
   const settings = useContext(SettingsContext);
   const navigation = useNavigation();
   const { t, i18n } = useTranslation();
+  const mainScrollView = useRef();
 
   const [selected, setSelected] = useState("chapters");
   const [selectedBook, setSelectedBook] = useState(currentBook);
@@ -29,8 +30,18 @@ export default function ChapterSelection({ route }) {
     navigation.setOptions({ headerTitle: t(book) });
   }, []);
 
+  useEffect(() => {
+    if (mainScrollView.current) {
+      mainScrollView.current.scrollTo({
+        x: 0,
+        y: 0,
+        animated: false,
+      });
+    }
+  }, [testament]);
+
   var chapters = [];
-  for (var i = 1; i <= 150; i++) {
+  for (var i = 1; i <= 142; i++) {
     chapters.push(i);
   }
   const AvailableBooks = ["Psalms"];
@@ -181,16 +192,17 @@ export default function ChapterSelection({ route }) {
       </View>
       {selected === "books" ? (
         <View style={{ flex: 1 }}>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={{
-              paddingHorizontal: 30,
-              marginTop: 20,
-            }}
-          >
-            {testament == "Old" ? (
-              <>
-                <Text style={styles.subheading}>Available </Text>
+          {testament == "Old" ? (
+            <>
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                style={{
+                  paddingHorizontal: 30,
+                  marginTop: 20,
+                }}
+                ref={mainScrollView}
+              >
+                <Text style={styles.subheading}>{t("Available")} </Text>
                 {AvailableBooks.map((book) => {
                   return (
                     <TouchableOpacity
@@ -236,9 +248,18 @@ export default function ChapterSelection({ route }) {
                     </View>
                   );
                 })}
-              </>
-            ) : (
-              <>
+              </ScrollView>
+            </>
+          ) : (
+            <>
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                style={{
+                  paddingHorizontal: 30,
+                  marginTop: 20,
+                }}
+                ref={mainScrollView}
+              >
                 <Text style={styles.subheading}>{t("Coming Soon")} </Text>
                 {ComingSoonNT.map((book) => {
                   return (
@@ -249,9 +270,9 @@ export default function ChapterSelection({ route }) {
                     </View>
                   );
                 })}
-              </>
-            )}
-          </ScrollView>
+              </ScrollView>
+            </>
+          )}
           <View
             style={{
               flexDirection: "row",
