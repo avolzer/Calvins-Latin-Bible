@@ -252,17 +252,26 @@ export default function MyPlayer(props) {
             )}
           </>
         )}
-        <TouchableOpacity
-          style={{ justifyContent: "center" }}
-          onPress={props.onNext}
-        >
+        {props.chapter !== 141 ? (
+          <TouchableOpacity
+            style={{ justifyContent: "center" }}
+            onPress={props.onNext}
+          >
+            <MaterialIcons
+              name="skip-next"
+              size={30}
+              color="gray"
+              style={{ color: "#EAEAEA" }}
+            ></MaterialIcons>
+          </TouchableOpacity>
+        ) : (
           <MaterialIcons
             name="skip-next"
             size={30}
-            color="gray"
-            style={{ color: "#EAEAEA" }}
+            color="#636363"
+            style={{ color: "#636363" }}
           ></MaterialIcons>
-        </TouchableOpacity>
+        )}
       </View>
       <View style={{ width: "100%" }}>
         <ProgressBar

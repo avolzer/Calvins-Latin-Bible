@@ -12,6 +12,7 @@ import ESVpsalms from "../assets/ESV-psalms.json";
 import KJVbible from "../assets/kjv.json";
 import "../assets/i18n/i18n";
 import { useTranslation } from "react-i18next";
+import LatinPsalms from "../assets/psalms-latin.json";
 
 export default function Reader({ route }) {
   const navigation = useNavigation();
@@ -80,7 +81,6 @@ export default function Reader({ route }) {
     }
     return roman;
   };
-  const currentChapter = psalmsData[chapter - 1];
 
   const removeLongmarks = (text) => {
     return text
@@ -91,18 +91,23 @@ export default function Reader({ route }) {
       .replaceAll("\u016b", "u");
   };
 
-  var verses = [];
-  for (let i = 0; i < currentChapter.verses.length; i++) {
-    verses.push(
-      <View key={i} style={{ flexDirection: "row", alignItems: "flex-start" }}>
-        <Text style={regular}>
-          {showLongmarks
-            ? currentChapter.verses[i]
-            : removeLongmarks(currentChapter.verses[i])}
-        </Text>
-      </View>
-    );
-  }
+  const currentChapter = LatinPsalms[chapter - 1];
+
+  const getLatintext = () => {
+    var verses = "";
+    currentChapter.verses.forEach((verse) => {
+      verses += verse.text;
+    });
+
+    return currentChapter.verses.map((verse) => {
+      return (
+        <View style={{ flexDirection: "row" }} key={verse.verse}>
+          <Text style={[superScript, { flexWrap: "wrap" }]}>{verse.verse}</Text>
+          <Text style={regular}>{verse.text.trim()}</Text>
+        </View>
+      );
+    });
+  };
   const getESVsubheading = () => {
     var subheading = "";
     const firstVerse = ESVpsalms.filter(
@@ -183,40 +188,12 @@ export default function Reader({ route }) {
     });
   };
 
-  const [latinVerses, setLatinVerses] = useState("<p></p>");
-
-  useEffect(() => {
-    getEnglish(chapter);
-  }, []);
-
   useEffect(() => {
     if (route.params && route.params.chap) setChapter(route.params.chap);
   }, [route.params]);
 
-  const getEnglish = async (ch) => {
-    const API_KEY = `c3fd729feb669c03c2d4d5474409d775`;
-    var url =
-      "https://api.scripture.api.bible/v1/bibles/de4e12af7f28f599-01/chapters/PSA." +
-      ch +
-      "?content-type=html&include-notes=false&include-titles=true&include-chapter-numbers=false&include-verse-numbers=true&include-verse-spans=false";
-
-    fetch(url, {
-      method: "GET",
-      headers: new Headers({
-        "api-key": API_KEY,
-      }),
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        setLatinVerses(responseJson.data.content);
-      })
-      .catch((error) => {
-        alert(error);
-      });
-  };
   useEffect(() => {
     mainScrollView.current.scrollTo({ x: 0, y: 0, animated: false });
-    getEnglish(chapter);
   }, [chapter]);
 
   return (
@@ -266,7 +243,7 @@ export default function Reader({ route }) {
                 </>
               )}
             </View>
-            {verses}
+            <View style={{ paddingRight: 20 }}>{getLatintext()}</View>
           </ScrollView>
         ) : (
           <>
@@ -304,7 +281,10 @@ export default function Reader({ route }) {
                 <View style={{ paddingRight: 20 }}>{getKJVtext()}</View>
               </ScrollView>
             ) : (
-              <ScrollView ref={mainScrollView}>
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                ref={mainScrollView}
+              >
                 <View style={{ paddingVertical: 20 }}>
                   <Text style={styles.chapterNum}>Psalm {chapter}</Text>
                   {getESVsubheading() && (
