@@ -14,18 +14,15 @@ export const globalStyles = StyleSheet.create({
   text: {
     fontSize: 20,
     lineHeight: 35,
-    fontFamily: "serif",
   },
   paragraph: {
     fontSize: 20,
     marginTop: 15,
     marginBottom: 15,
-    fontFamily: "serif",
   },
   subHeading: {
     fontSize: 20,
     fontWeight: "bold",
-    fontFamily: "serif",
     paddingTop: 24,
   },
 });
