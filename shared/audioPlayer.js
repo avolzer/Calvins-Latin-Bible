@@ -35,7 +35,7 @@ export default function MyPlayer(props) {
     isPlaying: false,
     playbackInstance: null,
     currentIndex: 0,
-    isBuffering: true,
+    isBuffering: false,
     isLoaded: false,
     reachedEnd: false,
     durationMillis: 1,
@@ -46,35 +46,8 @@ export default function MyPlayer(props) {
 
   const intervalRef = useRef();
   const [sequence, setSequence] = useState(0);
-
-  const loadData = async () => {
-    try {
-      loadAudio();
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const playbackInstance = new Audio.Sound();
-
-  const loadAudio = async () => {
-    try {
-      const source = paths[(props.chapter - 1) % 22];
-      const status = {};
-      playbackInstance.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-      await playbackInstance.loadAsync(source, status, false);
-      playbackInstance.getStatusAsync().then(function (result) {
-        setState((curState) => ({
-          ...curState,
-          playbackInstance,
-          durationMillis: result.durationMillis,
-          isLoaded: true,
-        }));
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  const loadingIdRef = useRef(0);
+  const shouldPlay = useRef(false);
 
   useEffect(() => {
     stop();
@@ -87,16 +60,62 @@ export default function MyPlayer(props) {
     setSequence(0);
     clearInterval(intervalId);
 
-    loadData();
+    let isCancelled = false;
+    loadingIdRef.current += 1;
+    const currentLoadingId = loadingIdRef.current;
+    async function loadAudio() {
+      if (state.playbackInstance) {
+        await state.playbackInstance.unloadAsync();
+      }
+
+      try {
+        const source = paths[(props.chapter - 1) % 22];
+
+        const sound = new Audio.Sound();
+        await sound.loadAsync(source, {
+          shouldPlay: false,
+          isLooping: false,
+        });
+        if (!isCancelled && currentLoadingId === loadingIdRef.current) {
+          sound.getStatusAsync().then(function (result) {
+            setState((curState) => ({
+              ...curState,
+              playbackInstance: sound,
+              durationMillis: result.durationMillis,
+              isLoaded: true,
+            }));
+          });
+          if (shouldPlay.current) {
+            await sound.playAsync();
+            interval(state.playbackInstance);
+
+            shouldPlay.current = false;
+          }
+        } else {
+          await sound.unloadAsync();
+        }
+      } catch (error) {
+        console.error("Error loading audio:", error);
+      }
+    }
+
+    loadAudio();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [props.chapter]);
 
-  const interval = () => {
+  const interval = (playbackInstance) => {
     intervalRef.current = setInterval(async () => {
-      const status = await state.playbackInstance.getStatusAsync();
-      recordingEnded = status.positionMillis >= status.playableDurationMillis;
+      const status = await playbackInstance.getStatusAsync();
+
+      const recordingEnded =
+        status.positionMillis >= status.playableDurationMillis;
+
       if (recordingEnded) {
         clearInterval(intervalRef.current);
-        await state.playbackInstance.pauseAsync();
+        await playbackInstance.pauseAsync();
         setState((curState) => ({
           ...curState,
           isPlaying: false,
@@ -127,7 +146,7 @@ export default function MyPlayer(props) {
     if (state.isPlaying) {
       await state.playbackInstance.stopAsync();
     }
-    playbackInstance.unloadAsync();
+    state.playbackInstance.unloadAsync();
     setState((curState) => ({
       ...curState,
       isLoaded: false,
@@ -135,18 +154,8 @@ export default function MyPlayer(props) {
     }));
   };
 
-  const onPlaybackStatusUpdate = async (playbackStatus) => {
-    if (playbackStatus.didJustFinish) {
-      await playbackInstance.pauseAsync();
-      setState((curState) => ({
-        ...curState,
-        isPlaying: false,
-        reachedEnd: true,
-      }));
-    }
-  };
-  const pause = async (playbackInstance) => {
-    await playbackInstance.pauseAsync();
+  const pause = async () => {
+    await state.playbackInstance.pauseAsync();
     clearInterval(intervalRef.current);
     setState((curState) => ({
       ...curState,
@@ -154,13 +163,22 @@ export default function MyPlayer(props) {
     }));
   };
 
-  const play = async (playbackInstance) => {
-    await playbackInstance.playAsync();
-    interval();
+  const play = async () => {
     setState((curState) => ({
       ...curState,
       isPlaying: true,
     }));
+
+    try {
+      if (state.isLoaded) {
+        await state.playbackInstance.playAsync();
+        interval(state.playbackInstance);
+      } else {
+        shouldPlay.current = true;
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const replay = async () => {
@@ -177,12 +195,12 @@ export default function MyPlayer(props) {
   };
 
   const PlayPauseHandler = async () => {
-    const { isPlaying, playbackInstance, isLoaded, reachedEnd } = state;
+    const { isPlaying } = state;
 
     if (isPlaying) {
-      pause(playbackInstance);
+      pause();
     } else {
-      play(playbackInstance);
+      play();
     }
   };
 

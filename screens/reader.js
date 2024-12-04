@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { globalStyles } from "../styles/global";
 import MyPlayer from "../shared/audioPlayer";
-import HTML from "react-native-render-html";
-import psalmsData from "../assets/psalms.json";
 import { useNavigation } from "@react-navigation/native";
 import ReaderHeader from "../shared/readerHeader";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -16,7 +14,7 @@ import LatinPsalms from "../assets/psalms-latin.json";
 
 export default function Reader({ route }) {
   const navigation = useNavigation();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const { appLanguage, showLongmarks, fontSize, translation } =
     useContext(SettingsContext);
@@ -26,8 +24,7 @@ export default function Reader({ route }) {
 
   const [lang, setLang] = useState("Latin");
   const [currentBook, setCurrentBook] = useState("Psalm");
-  const toggleSwitch = () =>
-    setShowLongmarks((previousState) => !previousState);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [chapter, setChapter] = useState(1);
 
@@ -38,13 +35,10 @@ export default function Reader({ route }) {
 
   const superFontSize = Math.floor(fontSize * 0.6);
 
-  const superlineHeight = superFontSize * 1.1;
-
   const superScript = {
     textAlignVertical: "top",
     fontSize: superFontSize,
     lineHeight: parseInt(fontSize + fontSize * 1.2, 10),
-    fontFamily: "serif",
     paddingRight: 10,
   };
 
@@ -52,7 +46,6 @@ export default function Reader({ route }) {
     textAlignVertical: "bottom",
     fontSize: fontSize,
     lineHeight: parseInt(fontSize + fontSize * 1.2, 10),
-    fontFamily: "serif",
   };
 
   const romanizeUpper = (num) => {
@@ -307,7 +300,10 @@ export default function Reader({ route }) {
           style={{ flex: 1 }}
           playerRef={playerRef}
           onNext={() => {
-            setChapter(chapter + 1);
+            navigation.navigate("Reader", {
+              name: "Psalm " + chapter,
+              chap: chapter + 1,
+            });
           }}
           onPrevious={() => {
             setChapter(chapter - 1);
@@ -378,7 +374,6 @@ const LanguageToggle = ({ lang, setLang, t }) => {
 const styles = StyleSheet.create({
   chapterNum: {
     fontSize: 20,
-    fontFamily: "serif",
     paddingBottom: 4,
     fontWeight: "bold",
   },
