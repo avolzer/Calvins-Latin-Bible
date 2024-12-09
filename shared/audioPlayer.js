@@ -239,7 +239,6 @@ export default function MyPlayer(props) {
             name="skip-previous"
             size={30}
             color="#636363"
-            style={{ paddingLeft: 20 }}
           ></MaterialIcons>
         )}
         {state.isPlaying ? (
@@ -270,7 +269,7 @@ export default function MyPlayer(props) {
             )}
           </>
         )}
-        {props.chapter !== 141 ? (
+        {props.chapter !== 150 ? (
           <TouchableOpacity
             style={{ justifyContent: "center" }}
             onPress={props.onNext}

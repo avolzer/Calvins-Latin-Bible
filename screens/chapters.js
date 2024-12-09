@@ -41,7 +41,7 @@ export default function ChapterSelection({ route }) {
   }, [testament]);
 
   var chapters = [];
-  for (var i = 1; i <= 142; i++) {
+  for (var i = 1; i <= 150; i++) {
     chapters.push(i);
   }
   const AvailableBooks = ["Psalms"];

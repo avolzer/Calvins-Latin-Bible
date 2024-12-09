@@ -96,7 +96,11 @@ export default function Reader({ route }) {
       return (
         <View style={{ flexDirection: "row" }} key={verse.verse}>
           <Text style={[superScript, { flexWrap: "wrap" }]}>{verse.verse}</Text>
-          <Text style={regular}>{verse.text.trim()}</Text>
+          <Text style={regular}>
+            {showLongmarks
+              ? verse.text.trim()
+              : removeLongmarks(verse.text.trim())}
+          </Text>
         </View>
       );
     });
@@ -162,23 +166,30 @@ export default function Reader({ route }) {
   const getKJVtext = () => {
     const currentChapter = KJVbible.verses
       .filter((verse) => verse.book_name == "Psalms")
-      .filter((verse) => verse.chapter == chapter);
-
-    var verses = "";
-    currentChapter.forEach((verse) => {
-      verses += verse.text;
-    });
+      .filter((verse) => verse.chapter == chapter)
+      .filter((verse) => verse.verse > 0);
 
     return currentChapter.map((verse) => {
       var text = verse.text.replace("¶", "");
 
       return (
-        <View style={{ flexDirection: "row" }} key={verse.passage}>
+        <View style={{ flexDirection: "row" }} key={verse.verse}>
           <Text style={[superScript, { flexWrap: "wrap" }]}>{verse.verse}</Text>
           <Text style={regular}>{text}</Text>
         </View>
       );
     });
+  };
+
+  const getKJVsubHeading = () => {
+    const subheading = KJVbible.verses.find(
+      (verse) =>
+        verse.book_name == "Psalms" &&
+        verse.chapter == chapter &&
+        verse.verse == 0
+    );
+
+    return subheading?.text || undefined;
   };
 
   useEffect(() => {
@@ -248,8 +259,6 @@ export default function Reader({ route }) {
               >
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
                     paddingVertical: 20,
                   }}
                 >
@@ -270,7 +279,13 @@ export default function Reader({ route }) {
                       )}
                     </>
                   )}
+                  {getKJVsubHeading() && (
+                    <Text style={{ fontSize: fontSize, fontStyle: "italic" }}>
+                      {getKJVsubHeading()}
+                    </Text>
+                  )}
                 </View>
+
                 <View style={{ paddingRight: 20 }}>{getKJVtext()}</View>
               </ScrollView>
             ) : (
