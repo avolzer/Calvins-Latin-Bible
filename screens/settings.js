@@ -77,7 +77,7 @@ export default function Settings() {
                 }}
               >
                 <Picker.Item label={t("Small")} value={14} />
-                <Picker.Item label={t("Regular")} value={20} />
+                <Picker.Item label={t("Medium")} value={20} />
                 <Picker.Item label={t("Large")} value={24} />
                 <Picker.Item label={t("Extra Large")} value={30} />
               </Picker>
