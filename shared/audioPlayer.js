@@ -4,6 +4,7 @@ import { Audio } from "expo-av";
 import { AntDesign } from "@expo/vector-icons";
 import ProgressBar from "./progressBar";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function MyPlayer(props) {
   const paths = [
@@ -43,6 +44,12 @@ export default function MyPlayer(props) {
     sliderValue: 0,
     isSeeking: false,
   });
+  const focused = useIsFocused();
+  useEffect(() => {
+    if (!focused) {
+      pause();
+    }
+  }, [focused]);
 
   const intervalRef = useRef();
   const [sequence, setSequence] = useState(0);
@@ -191,7 +198,7 @@ export default function MyPlayer(props) {
       sliderValue: 0,
     }));
     setSequence(0);
-    interval();
+    interval(state.playbackInstance);
   };
 
   const PlayPauseHandler = async () => {
@@ -304,10 +311,14 @@ export default function MyPlayer(props) {
             );
             setSequence(Math.round(time * state.durationMillis) / 1000);
 
+            if (state.reachedEnd) {
+              setState((curState) => ({ ...curState, reachedEnd: false }));
+            }
+
             if (!state.isPlaying) {
               await pause(state.playbackInstance);
             } else {
-              interval();
+              interval(state.playbackInstance);
 
               setState((curState) => ({
                 ...curState,
