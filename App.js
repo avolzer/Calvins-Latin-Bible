@@ -1,12 +1,32 @@
 import "./gesture-handler";
-import React from "react";
+import React, { useState } from "react";
 import Navigator from "./routes/tabNav";
 import { SettingsContextProvider } from "./context/settingsContext";
+import {
+  createNavigationContainerRef,
+  NavigationContainer,
+} from "@react-navigation/native";
+
+const ref = createNavigationContainerRef();
 
 export default function App() {
+  const [routeName, setRouteName] = useState();
+  console.log(`route name: ${routeName}`);
   return (
     <SettingsContextProvider>
-      <Navigator />
+      <NavigationContainer
+        ref={ref}
+        onReady={() => {
+          setRouteName(ref.getCurrentRoute().name);
+        }}
+        onStateChange={async () => {
+          const previousRouteName = routeName;
+          const currentRouteName = ref.getCurrentRoute().name;
+          setRouteName(currentRouteName);
+        }}
+      >
+        <Navigator routeName={routeName} />
+      </NavigationContainer>
     </SettingsContextProvider>
   );
 }

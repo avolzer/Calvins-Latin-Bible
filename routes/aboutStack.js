@@ -1,20 +1,19 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
 
-import Contents from "../screens/toc";
 import About from "../screens/about";
-import DrawerHeader from "../shared/drawerHeader";
+import EditingNotes from "../screens/editingNotes";
+import ContributersAndCredits from "../screens/contributersAndCredits";
+import Forward from "../screens/forward";
 
 const Stack = createStackNavigator();
 export default function HomeStack({ navigation }) {
   return (
     <Stack.Navigator
       screenOptions={{
+        headerShown: false,
         headerStyle: {
           backgroundColor: "white",
-          elevation: 0,
-          borderBottomColor: "black",
           borderBottomWidth: 1,
         },
         headerTitleStyle: {
@@ -22,11 +21,26 @@ export default function HomeStack({ navigation }) {
         },
       }}
     >
+      <Stack.Screen name="About" component={About} />
       <Stack.Screen
-        name="About"
-        component={About}
+        name="Contributers And Credits"
+        component={ContributersAndCredits}
         options={{
-          headerLeft: () => <DrawerHeader navigation={navigation} />,
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="A Note on Editing Procedures"
+        component={EditingNotes}
+        options={{
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="Prefatory Material from Dr. Richard Wevers' Edition"
+        component={Forward}
+        options={{
+          headerShown: true,
         }}
       />
     </Stack.Navigator>
