@@ -7,7 +7,7 @@ import ContributersAndCredits from "../screens/contributersAndCredits";
 import Forward from "../screens/forward";
 
 const Stack = createStackNavigator();
-export default function HomeStack({ navigation }) {
+export default function AboutStack({}) {
   return (
     <Stack.Navigator
       screenOptions={{
