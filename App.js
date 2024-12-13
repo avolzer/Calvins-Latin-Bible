@@ -11,7 +11,6 @@ const ref = createNavigationContainerRef();
 
 export default function App() {
   const [routeName, setRouteName] = useState();
-  console.log(`route name: ${routeName}`);
   return (
     <SettingsContextProvider>
       <NavigationContainer

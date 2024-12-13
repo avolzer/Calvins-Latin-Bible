@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../routes/homeStack";
-import About from "../routes/aboutStack";
+import AboutStack from "../routes/aboutStack";
 import Settings from "../screens/settings";
 import { FontAwesome } from "@expo/vector-icons";
 
@@ -30,7 +30,7 @@ export default function Navigator(props) {
     >
       <Tab.Screen
         name="About"
-        component={About}
+        component={AboutStack}
         options={{
           headerTintColor: "white",
           headerShown: false,
