@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { View, TouchableOpacity, Text, ScrollView } from "react-native";
 import { globalStyles } from "../styles/global";
-
-// import textData from '../assets/csvjson'
+import { useNavigation } from "@react-navigation/native";
 import psalms from "../assets/psalms.json";
 
-export default function Search({ navigation, route }) {
+export default function Search({ route }) {
   //search term will be blank if coming from icon press, user input if coming from searchHeader submit
   const { search_term } = route.params;
+  const navigation = useNavigation();
 
   const [search_results, setSearchResults] = useState([]);
 

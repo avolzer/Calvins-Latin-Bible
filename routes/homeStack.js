@@ -8,13 +8,6 @@ import ChapterSelection from "../screens/chapters";
 
 const Stack = createStackNavigator();
 export default function HomeStack({ navigation }) {
-  // function headerText() {
-  //   if (global.language == "English") {
-  //     return "Calvin's Latin Psalter";
-  //   } else {
-  //     return "Psalmi Ab Iohanne Calvini";
-  //   }
-  // }
   return (
     <Stack.Navigator
       screenOptions={{

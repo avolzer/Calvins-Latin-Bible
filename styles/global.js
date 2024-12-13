@@ -16,13 +16,15 @@ export const globalStyles = StyleSheet.create({
     lineHeight: 35,
   },
   paragraph: {
-    fontSize: 20,
+    fontSize: 16,
     marginTop: 15,
     marginBottom: 15,
+    lineHeight: 24,
   },
   subHeading: {
     fontSize: 20,
     fontWeight: "bold",
     paddingTop: 24,
+    color: "#313131",
   },
 });
