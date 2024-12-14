@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, TouchableOpacity, Text, ScrollView } from "react-native";
 import { globalStyles } from "../styles/global";
 import { useNavigation } from "@react-navigation/native";
-import psalms from "../assets/psalms.json";
+import psalms from "../assets/psalms-latin.json";
 
 export default function Search({ route }) {
   //search term will be blank if coming from icon press, user input if coming from searchHeader submit
@@ -28,6 +28,10 @@ export default function Search({ route }) {
   };
 
   const renderResult = (verseText, verseNum, chapterNum) => {
+    const idx = removeLongmarks(verseText)
+      .toLowerCase()
+      .indexOf(removeLongmarks(search_term).toLowerCase());
+
     return (
       <View key={`${chapterNum}:${verseNum}`}>
         <TouchableOpacity
@@ -38,36 +42,34 @@ export default function Search({ route }) {
           <Text style={{ fontWeight: "bold" }}>
             Psalm {chapterNum}:{verseNum}
           </Text>
-          <Text>{verseText}</Text>
-          <Text></Text>
+          <Text style={{ paddingBottom: 22 }}>
+            {verseText.substr(0, idx)}
+            <Text style={{ fontWeight: "bold" }}>
+              {verseText.substr(idx, search_term.length)}
+            </Text>
+            {verseText.substr(idx + search_term.length)}
+          </Text>
         </TouchableOpacity>
       </View>
     );
   };
 
-  const getSearchResults = () => {
-    var results = [];
-    psalms.forEach((ch) => {
-      ch.verses.forEach((v, idx) => {
-        if (
-          removeLongmarks(v)
+  const getSearchResults = async () => {
+    const results = psalms.flatMap((ch) =>
+      ch.verses
+        .filter((v) =>
+          removeLongmarks(v.text)
             .toLowerCase()
             .includes(removeLongmarks(search_term).toLowerCase())
-        ) {
-          results.push(renderResult(v, idx + 1, ch.chapter));
-        }
-      });
-    });
+        )
+        .map((v) => renderResult(v.text.trimEnd(), v.verse, ch.chapter))
+    );
 
-    // for (var i = 0; i < psalms.length; i++) {
-    //   if (psalms[i].Text.includes(search_term)) {
-    //     results.push(renderResult(i));
-    //   }
-    // }
-    setSearchResults(results);
-    if (results.length == 0) {
+    if (results.length === 0) {
       results.push(<Text>No results found</Text>);
     }
+
+    setSearchResults(results);
   };
 
   useEffect(() => {
@@ -85,16 +87,12 @@ export default function Search({ route }) {
             onPress={() => navigation.pop()}
           ></TouchableOpacity>
         ) : (
-          <View>
-            {/* <Text>Results for {search_term}: </Text> */}
-            <Text></Text>
-            <ScrollView
-              style={{ height: "95%" }}
-              showsVerticalScrollIndicator={false}
-            >
-              {search_results}
-            </ScrollView>
-          </View>
+          <ScrollView
+            style={{ height: "95%" }}
+            showsVerticalScrollIndicator={false}
+          >
+            {search_results}
+          </ScrollView>
         )}
       </View>
     </View>
