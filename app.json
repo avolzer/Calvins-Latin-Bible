@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "psalter",
-    "slug": "psalter",
+    "name": "Calvin's Latin Bible",
+    "slug": "calvins-latin-bible",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,9 +13,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -34,8 +32,6 @@
         "projectId": "f6a81507-32ce-47b3-a19b-435e180688e2"
       }
     },
-    "plugins": [
-      "expo-asset"
-    ]
+    "plugins": ["expo-asset"]
   }
 }
