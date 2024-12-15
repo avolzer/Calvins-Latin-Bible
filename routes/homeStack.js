@@ -12,10 +12,11 @@ export default function HomeStack({ navigation }) {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: "rgba(34, 36, 40, 1)",
+          backgroundColor: "white",
+          borderBottomWidth: 1,
         },
         headerTitleStyle: {
-          color: "white",
+          color: "black",
         },
       }}
     >
@@ -40,7 +41,7 @@ export default function HomeStack({ navigation }) {
         name="Chapter Selection"
         component={ChapterSelection}
         options={{
-          headerTintColor: "white",
+          headerTintColor: "black",
         }}
       />
     </Stack.Navigator>

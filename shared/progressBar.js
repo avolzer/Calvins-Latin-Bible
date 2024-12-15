@@ -44,9 +44,9 @@ const ProgressBar = ({
         }}
         value={sliderValue}
         style={styles.slider}
-        minimumTrackTintColor="white"
-        maximumTrackTintColor="#b3b4b5"
-        thumbTintColor="white"
+        minimumTrackTintColor="#1B572F"
+        maximumTrackTintColor="#737373"
+        thumbTintColor="#1B572F"
       />
     </View>
   );
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   text: {
-    color: "white",
+    color: "black",
   },
 });
 

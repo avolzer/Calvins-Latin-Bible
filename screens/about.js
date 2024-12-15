@@ -15,7 +15,7 @@ const About = () => {
   return (
     <View style={globalStyles.mainContainer}>
       <View style={{ paddingTop: 75 }}>
-        <Text style={{ fontSize: 35, paddingBottom: 10, paddingLeft: 20 }}>
+        <Text style={{ fontSize: 35, paddingBottom: 10, paddingLeft: 24 }}>
           About
         </Text>
         <TouchableHighlight

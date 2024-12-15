@@ -146,7 +146,7 @@ export default function ChapterSelection({ route }) {
     );
   });
   return (
-    <View style={{ flex: 1, paddingTop: 30 }}>
+    <View style={{ flex: 1, paddingTop: 30, backgroundColor: "white" }}>
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity
           style={[
@@ -297,7 +297,7 @@ export default function ChapterSelection({ route }) {
               <Text
                 style={{
                   fontSize: 16,
-                  color: testament == "Old" ? "black" : "gray",
+                  color: "black",
                 }}
               >
                 {t("Old")}
@@ -306,7 +306,7 @@ export default function ChapterSelection({ route }) {
                 style={{
                   fontSize: 16,
 
-                  color: testament == "Old" ? "black" : "gray",
+                  color: "black",
                 }}
               >
                 {t("Testament")}
@@ -327,7 +327,7 @@ export default function ChapterSelection({ route }) {
                 style={{
                   fontSize: 16,
 
-                  color: testament == "New" ? "black" : "gray",
+                  color: "Black",
                 }}
               >
                 {t("New")}
@@ -336,7 +336,7 @@ export default function ChapterSelection({ route }) {
                 style={{
                   fontSize: 16,
 
-                  color: testament == "New" ? "black" : "gray",
+                  color: "Black",
                 }}
               >
                 {t("Testament")}

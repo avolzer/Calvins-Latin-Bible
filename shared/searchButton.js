@@ -14,7 +14,7 @@ export default function SearchButton() {
     <View style={{ padding: 10 }}>
       <EvilIcons
         name="search"
-        color={"white"}
+        color={"black"}
         size={30}
         onPress={pressHandler}
       />
