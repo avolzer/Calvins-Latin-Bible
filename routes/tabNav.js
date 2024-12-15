@@ -10,21 +10,22 @@ export default function Navigator(props) {
 
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Read"
       labeled={false}
-      activeColor="white"
-      inactiveColor="red"
       screenOptions={({ route }) => ({
-        tabBarShowLabel: false,
+        tabBarActiveTintColor: "#4BA669",
+        tabBarInactiveTintColor: "#737373",
+        tabBarShowLabel: true,
         tabBarHideOnKeyboard: true,
 
         headerShown: true,
         tabBarStyle: {
           display: props.routeName == "Search Bar" ? "none" : true,
-          backgroundColor: "rgba(34,36,40,1)",
+          backgroundColor: "white",
           borderTopWidth: 0,
-          activeTintColor: "white",
-          tabBarInactiveTintColor: "red",
+          paddingBottom: 10,
+          paddingTop: 5,
+          height: 70,
         },
       })}
     >
@@ -39,8 +40,8 @@ export default function Navigator(props) {
             return (
               <FontAwesome
                 name="info-circle"
-                size={20}
-                color={focused ? "white" : "gray"}
+                size={25}
+                color={focused ? "#4BA669" : "#737373"}
               ></FontAwesome>
             );
           },
@@ -48,7 +49,7 @@ export default function Navigator(props) {
       />
 
       <Tab.Screen
-        name="Home"
+        name="Read"
         component={Home}
         options={{
           headerShown: false,
@@ -56,8 +57,8 @@ export default function Navigator(props) {
             return (
               <FontAwesome
                 name="book"
-                size={20}
-                color={focused ? "white" : "gray"}
+                size={25}
+                color={focused ? "#4BA669" : "#737373"}
               ></FontAwesome>
             );
           },
@@ -67,16 +68,13 @@ export default function Navigator(props) {
         name="Settings"
         component={Settings}
         options={{
-          headerTintColor: "white",
-          headerStyle: {
-            backgroundColor: "rgba(34, 36, 40, 1)",
-          },
+          headerShown: false,
           tabBarIcon: ({ focused }) => {
             return (
               <FontAwesome
                 name="gear"
-                size={20}
-                color={focused ? "white" : "gray"}
+                size={25}
+                color={focused ? "#4BA669" : "#737373"}
               ></FontAwesome>
             );
           },

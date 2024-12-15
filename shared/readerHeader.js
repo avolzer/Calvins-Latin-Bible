@@ -21,7 +21,7 @@ export default function ReaderHeader({ chapter, book }) {
         width: "100%",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "rgba(34, 36, 40, 1)",
+        backgroundColor: "white",
         position: "relative",
         height: 120,
       }}
@@ -42,13 +42,13 @@ export default function ReaderHeader({ chapter, book }) {
         >
           <Text
             style={{
-              color: "white",
+              color: "black",
               fontSize: 25,
             }}
           >{`${t(book)} ${
             appLanguage == "English" ? chapter : romanizeNumeral(chapter)
           }`}</Text>
-          <AntDesign style={{ color: "beige" }} name="caretdown" size={15} />
+          <AntDesign style={{ color: "#737373" }} name="caretdown" size={15} />
         </TouchableOpacity>
       </View>
 

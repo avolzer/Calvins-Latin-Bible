@@ -345,7 +345,7 @@ export default function MyPlayer(props) {
         justifyContent: "center",
         flexDirection: "column",
         alignItems: "center",
-        backgroundColor: "#636363",
+        backgroundColor: "white",
         flex: 1,
         paddingHorizontal: 24,
       }}
@@ -365,20 +365,19 @@ export default function MyPlayer(props) {
             <MaterialIcons
               name="skip-previous"
               size={30}
-              color="gray"
-              style={{ color: "#EAEAEA" }}
+              style={styles.controls}
             ></MaterialIcons>
           </TouchableOpacity>
         ) : (
           <MaterialIcons
             name="skip-previous"
             size={30}
-            color="#636363"
+            style={{ color: "white" }}
           ></MaterialIcons>
         )}
         {state.isPlaying ? (
           <AntDesign
-            style={{ color: "white" }}
+            style={styles.controls}
             name="pausecircle"
             size={45}
             onPress={PlayPauseHandler}
@@ -387,7 +386,7 @@ export default function MyPlayer(props) {
           <>
             {state.reachedEnd ? (
               <AntDesign
-                style={{ color: "white" }}
+                style={styles.controls}
                 name="reload1"
                 size={45}
                 onPress={() => {
@@ -396,7 +395,7 @@ export default function MyPlayer(props) {
               />
             ) : (
               <AntDesign
-                style={{ color: "#EAEAEA" }}
+                style={styles.controls}
                 name="play"
                 size={45}
                 onPress={PlayPauseHandler}
@@ -412,16 +411,14 @@ export default function MyPlayer(props) {
             <MaterialIcons
               name="skip-next"
               size={30}
-              color="gray"
-              style={{ color: "#EAEAEA" }}
+              style={styles.controls}
             ></MaterialIcons>
           </TouchableOpacity>
         ) : (
           <MaterialIcons
             name="skip-next"
             size={30}
-            color="#636363"
-            style={{ color: "#636363" }}
+            style={styles.controls}
           ></MaterialIcons>
         )}
       </View>
@@ -460,4 +457,8 @@ export default function MyPlayer(props) {
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  controls: {
+    color: "#1B572F",
+  },
+});

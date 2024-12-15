@@ -22,13 +22,10 @@ export default function Settings() {
   const navigation = useNavigation();
   const { t, i18n } = useTranslation();
 
-  useEffect(() => {
-    navigation.setOptions({ headerTitle: t("Settings") });
-  }, [appLanguage]);
-
   return (
     <View style={globalStyles.mainContainer}>
-      <View style={styles.container}>
+      <View style={[globalStyles.container, { paddingTop: 75 }]}>
+        <Text style={{ fontSize: 35, paddingBottom: 10 }}>{t("Settings")}</Text>
         <Text style={styles.label}>{t("App Preferences")}</Text>
         <View style={styles.section}>
           <View style={styles.row}>
