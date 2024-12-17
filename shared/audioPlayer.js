@@ -5,7 +5,7 @@ import { AntDesign } from "@expo/vector-icons";
 import ProgressBar from "./progressBar";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
-import firebaseConfig from "../firebaseConfig";
+import firebaseConfig from "../firebaseConfig.js";
 import { initializeApp } from "firebase/app";
 import { ref, getDownloadURL, getStorage } from "firebase/storage";
 
@@ -26,6 +26,15 @@ export default function MyPlayer(props) {
         console.log(error);
       }
     };
+    stop();
+    const intervalId = intervalRef.current;
+    setState((curState) => ({
+      ...curState,
+      isPlaying: false,
+      reachedEnd: false,
+    }));
+    setSequence(0);
+    clearInterval(intervalId);
     getAudio();
   }, [props.chapter]);
 
@@ -54,15 +63,6 @@ export default function MyPlayer(props) {
   const shouldPlay = useRef(false);
 
   useEffect(() => {
-    stop();
-    const intervalId = intervalRef.current;
-    setState((curState) => ({
-      ...curState,
-      isPlaying: false,
-      reachedEnd: false,
-    }));
-    setSequence(0);
-    clearInterval(intervalId);
     let isCancelled = false;
     loadingIdRef.current += 1;
     const currentLoadingId = loadingIdRef.current;
@@ -71,7 +71,6 @@ export default function MyPlayer(props) {
         await state.playbackInstance.unloadAsync();
       }
       try {
-        const source = url;
         const sound = new Audio.Sound();
         await sound.loadAsync({
           uri: url,
@@ -99,7 +98,7 @@ export default function MyPlayer(props) {
         console.error("Error loading audio:", error);
       }
     }
-    loadAudio();
+    if (url) loadAudio();
     return () => {
       isCancelled = true;
     };
