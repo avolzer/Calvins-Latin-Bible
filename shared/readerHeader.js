@@ -24,7 +24,7 @@ export default function ReaderHeader({ chapter, book }) {
           justifyContent: "center",
           alignItems: "center",
           height: 120,
-          backgroundColor: "blue",
+          backgroundColor: "white",
           paddingTop: 50,
         }}
       >
