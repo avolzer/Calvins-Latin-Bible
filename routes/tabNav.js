@@ -20,7 +20,7 @@ export default function Navigator(props) {
 
         headerShown: true,
         tabBarStyle: {
-          display: props.routeName == "Search Bar" ? "none" : true,
+          display: props.routeName == "Search Bar" ? "none" : "flex",
           backgroundColor: "white",
           borderTopWidth: 0,
           paddingBottom: 10,
