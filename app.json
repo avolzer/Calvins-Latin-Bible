@@ -15,23 +15,31 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.avolzer.calvins-latin-bible"
     },
     "android": {
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "INTERNET"
+      ],
+      "enableProguardInReleaseBuilds": false,
+      "enableHermes": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.avolzer.psalter"
+      "package": "com.avolzer.calvinslatinbible"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "plugins": ["expo-asset"],
     "extra": {
       "eas": {
-        "projectId": "f6a81507-32ce-47b3-a19b-435e180688e2"
+        "projectId": "316fa2dc-cdfe-4fc4-9207-ea06df50a920"
       }
-    },
-    "plugins": ["expo-asset"]
+    }
   }
 }

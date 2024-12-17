@@ -1,9 +1,8 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "eject": "expo eject"
   },
@@ -39,7 +38,10 @@
     "react-navigation": "^5.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.0"
+    "@babel/core": "^7.24.0",
+    "kotlin": "^1.9.25"
   },
-  "private": true
+  "private": true,
+  "name": "calvins-latin-bible",
+  "version": "1.0.0"
 }
