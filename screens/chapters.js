@@ -113,19 +113,30 @@ export default function ChapterSelection({ route }) {
         key={index}
         style={[
           styles.wrapper,
-          { width: settings.appLanguage == "English" ? 80 : 100 },
+          {
+            width:
+              settings.appLanguage == "English" || settings.appLanguage == "en"
+                ? 80
+                : 100,
+          },
         ]}
       >
         <TouchableOpacity
           style={[
             styles.button,
-            { paddingHorizontal: settings.appLanguage == "English" ? 20 : 10 },
+            {
+              paddingHorizontal:
+                settings.appLanguage == "English" ||
+                settings.appLanguage == "en"
+                  ? 20
+                  : 10,
+            },
           ]}
           onPress={() => {
             pressHandler(item);
           }}
         >
-          {settings.appLanguage == "English" ? (
+          {settings.appLanguage == "English" || settings.appLanguage == "en" ? (
             <Text
               style={{
                 ...styles.numbers,

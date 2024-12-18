@@ -8,7 +8,7 @@ import { SettingsContext } from "../context/settingsContext";
 import "../assets/i18n/i18n";
 import { useTranslation } from "react-i18next";
 import { romanizeNumeral } from "../tools/romanizeNumeral";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, StatusBar } from "react-native";
 
 export default function ReaderHeader({ chapter, book }) {
   const navigation = useNavigation();
@@ -23,9 +23,8 @@ export default function ReaderHeader({ chapter, book }) {
           width: "100%",
           justifyContent: "center",
           alignItems: "center",
-          height: 120,
-          backgroundColor: "white",
-          paddingTop: 50,
+          paddingTop: StatusBar.currentHeight + 10,
+          paddingBottom: 15,
         }}
       >
         <View>
@@ -44,10 +43,12 @@ export default function ReaderHeader({ chapter, book }) {
                 fontSize: 25,
               }}
             >{`${t(book)} ${
-              appLanguage == "English" ? chapter : romanizeNumeral(chapter)
+              appLanguage == "English" || appLanguage == "en"
+                ? chapter
+                : romanizeNumeral(chapter)
             }`}</Text>
             <AntDesign
-              style={{ color: "#737373" }}
+              style={{ color: "#1B572F" }}
               name="caretdown"
               size={15}
             />
@@ -57,7 +58,7 @@ export default function ReaderHeader({ chapter, book }) {
         <View
           style={{
             position: "absolute",
-            top: 60,
+            top: StatusBar.currentHeight + 5,
             left: 10,
           }}
         >

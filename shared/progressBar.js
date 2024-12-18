@@ -17,7 +17,7 @@ const ProgressBar = ({
     s = (s - secs) / 60;
     var mins = s % 60;
 
-    secString = secs < 10 ? `0${secs}` : secs;
+    const secString = secs < 10 ? `0${secs}` : secs;
 
     return mins + ":" + secString;
   }

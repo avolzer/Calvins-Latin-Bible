@@ -83,7 +83,9 @@ export default function Settings() {
           <View
             style={[styles.row, { borderTopWidth: 1, borderColor: "gray" }]}
           >
-            <Text style={styles.text}>{t("English Translation")}</Text>
+            <Text style={[styles.text, { paddingRight: 18 }]}>
+              {t("English Translation")}
+            </Text>
             <View style={styles.pickerContainer}>
               <Picker
                 selectedValue={translation}

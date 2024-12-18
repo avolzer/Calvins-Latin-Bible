@@ -53,10 +53,9 @@ export default function ContributersAndCredits() {
           The following individuals contributed their time and expertise to this
           project and are gratefully acknowledged. {`\n\n`}Joan Crist (research
           supervisor){`\n\n`}Mishka Fernando (audio engineer) {`\n\n`}Natalie
-          Mouw (research assistant) {`\n\n`}Jillian Noe (research assistant){" "}
-          {`\n\n`}
-          David Noe (audio recordings, project supervisor) {`\n\n`}Adrienne Ora
-          (research assistant)
+          Mouw (research assistant) {`\n\n`}
+          David Noe (audio recordings, project supervisor) {`\n\n`}Jillian Noe
+          (research assistant){`\n\n`}Adrienne Ora (research assistant)
           {`\n\n`}Patrick Owens (Latin consultant) {`\n\n`}April Volzer
           (programmer)
           {`\n\n`}Tyson Watson (research assistant)

@@ -9,8 +9,9 @@ import firebaseConfig from "../firebaseConfig.js";
 import { initializeApp } from "firebase/app";
 import { ref, getDownloadURL, getStorage } from "firebase/storage";
 
-initializeApp(firebaseConfig);
 export default function MyPlayer(props) {
+  initializeApp(firebaseConfig);
+
   const [url, setUrl] = useState();
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export default function MyPlayer(props) {
         console.log(error);
       }
     };
-    stop();
+    if (state.playbackInstance) stop();
     const intervalId = intervalRef.current;
     setState((curState) => ({
       ...curState,
@@ -86,6 +87,7 @@ export default function MyPlayer(props) {
               isLoaded: true,
             }));
           });
+
           if (shouldPlay.current) {
             await sound.playAsync();
             interval(state.playbackInstance);
@@ -209,8 +211,6 @@ export default function MyPlayer(props) {
         flexDirection: "column",
         alignItems: "center",
         backgroundColor: "white",
-        flex: 1,
-        paddingHorizontal: 24,
       }}
     >
       <View
@@ -218,13 +218,11 @@ export default function MyPlayer(props) {
           flexDirection: "row",
           alignItems: "center",
           gap: 40,
+          paddingTop: 20,
         }}
       >
         {props.chapter > 1 ? (
-          <TouchableOpacity
-            style={{ justifyContent: "center" }}
-            onPress={props.onPrevious}
-          >
+          <TouchableOpacity onPress={props.onPrevious}>
             <MaterialIcons
               name="skip-previous"
               size={30}
@@ -285,7 +283,7 @@ export default function MyPlayer(props) {
           ></MaterialIcons>
         )}
       </View>
-      <View style={{ width: "100%" }}>
+      <View style={{ width: "100%", paddingHorizontal: 24 }}>
         <ProgressBar
           durationMillis={state.durationMillis}
           positionMillis={state.positionMillis}
