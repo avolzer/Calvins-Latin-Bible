@@ -15,15 +15,18 @@ export default function EditingNotes() {
           of superfluous spacing and often some unintended duplication. There
           were a number of verses which Calvin commented upon, but did not
           translate himself, which we supplied from Theodore Beza’s translation,
-          found in his 1598 Jesu Christi Domini nostri Novum Testamentum, sive
-          Novum Foedus. When we had a workable text, we used an online
-          macronizer to add in most of the correct macra to the text, but there
-          were still a number of errors to be fixed. The macronizer had a few
-          habitual errors, especially adding a long ē at the end of imperative
-          plurals, which we had to correct, along with making a judgment call on
-          ambiguous cases determined by context. Third declension feminine
-          nominatives ending in -as, for example, we marked short, following
-          Lewis and Short, though some sources mark them long.
+          found in his 1598{" "}
+          <Text style={{ fontStyle: "italic" }}>
+            Jesu Christi Domini nostri Novum Testamentum, sive Novum Foedus
+          </Text>
+          . When we had a workable text, we used an online macronizer to add in
+          most of the correct macra to the text, but there were still a number
+          of errors to be fixed. The macronizer had a few habitual errors,
+          especially adding a long ē at the end of imperative plurals, which we
+          had to correct, along with making a judgment call on ambiguous cases
+          determined by context. Third declension feminine nominatives ending in
+          -as, for example, we marked short, following Lewis and Short, though
+          some sources mark them long.
         </Text>
         <Text style={globalStyles.paragraph}>
           There were also a number of words not recognized by the macronizer,

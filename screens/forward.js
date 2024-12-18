@@ -59,14 +59,17 @@ export default function Forward() {
         </Text>
         <Text style={globalStyles.paragraph}>
           There is no distinctly modern edition of the text of Calvin’s
-          commentaries except for that of Romans done recently by T.H.L Parker
-          (Iohannis Calvini Commentarius in Epistolam Pauli ad Romanos, Leiden:
-          E.J. Brill, 1981). For that reason the commentary text used to
-          reconstruct the Biblical text is the one given in J.J. Schipper’s
-          edition of Calvin’s works, done in Amsterdam, 1667-1671. It is a sound
-          text and the best available. Schipper’s text has been followed
-          consistently, except for the correcting of about three dozen obviously
-          typographical errors.
+          commentaries except for that of Romans done recently by T.H.L Parker{" "}
+          {"("}
+          <Text style={{ fontStyle: "italic" }}>
+            Iohannis Calvini Commentarius in Epistolam Pauli ad Romanos, Leiden:
+            E.J. Brill, 1981.
+          </Text>
+          {")"} For that reason the commentary text used to reconstruct the
+          Biblical text is the one given in J.J. Schipper’s edition of Calvin’s
+          works, done in Amsterdam, 1667-1671. It is a sound text and the best
+          available. Schipper’s text has been followed consistently, except for
+          the correcting of about three dozen obviously typographical errors.
         </Text>
         <Text style={globalStyles.subHeading}>Variant Readings</Text>
         <Text style={globalStyles.paragraph}>

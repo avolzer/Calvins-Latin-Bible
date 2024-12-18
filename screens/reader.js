@@ -210,7 +210,7 @@ export default function Reader({ route }) {
         }}
       />
       <LanguageToggle lang={lang} setLang={(l) => setLang(l)} t={t} />
-      <View style={[globalStyles.container, { flex: 6 }]}>
+      <View style={[globalStyles.container]}>
         {lang == "Latin" ? (
           <ScrollView
             style={styles.scroll}
@@ -229,10 +229,12 @@ export default function Reader({ route }) {
                       ? currentChapter.chapterLatin
                       : removeLongmarks(currentChapter.chapterLatin)}
                   </Text>
-                  {currentChapter.superscription && (
+                  {currentChapter.superscription ? (
                     <Text style={{ fontSize: fontSize, fontStyle: "italic" }}>
                       {currentChapter.superscription}
                     </Text>
+                  ) : (
+                    <></>
                   )}
                 </View>
               ) : (
@@ -309,7 +311,7 @@ export default function Reader({ route }) {
           </>
         )}
       </View>
-      <View style={{ flex: 1, flexDirection: "row" }}>
+      <View>
         <MyPlayer
           chapter={chapter}
           style={{ flex: 1 }}
@@ -346,7 +348,7 @@ const LanguageToggle = ({ lang, setLang, t }) => {
       >
         <View
           style={{
-            borderColor: "lightgray",
+            borderColor: "#1B572F",
             borderWidth: 1,
             textAlignVertical: "center",
             textAlign: "center",
@@ -354,10 +356,12 @@ const LanguageToggle = ({ lang, setLang, t }) => {
             paddingVertical: 8,
             borderTopLeftRadius: 20,
             borderBottomLeftRadius: 20,
-            backgroundColor: lang === "Latin" ? "white" : "lightgray",
+            backgroundColor: lang === "Latin" ? "#1B572F" : "white",
           }}
         >
-          <Text>{t("Latin")}</Text>
+          <Text style={{ color: lang === "Latin" ? "white" : "black" }}>
+            {t("Latin")}
+          </Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity
@@ -367,7 +371,7 @@ const LanguageToggle = ({ lang, setLang, t }) => {
       >
         <View
           style={{
-            borderColor: "lightgray",
+            borderColor: "#1B572F",
             borderWidth: 1,
             borderLeftWidth: 0,
             textAlignVertical: "center",
@@ -376,10 +380,12 @@ const LanguageToggle = ({ lang, setLang, t }) => {
             paddingVertical: 8,
             borderTopRightRadius: 20,
             borderBottomRightRadius: 20,
-            backgroundColor: lang === "English" ? "white" : "lightgray",
+            backgroundColor: lang === "English" ? "#1B572F" : "white",
           }}
         >
-          <Text>{t("English")}</Text>
+          <Text style={{ color: lang === "English" ? "white" : "black" }}>
+            {t("English")}
+          </Text>
         </View>
       </TouchableOpacity>
     </View>
