@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  StyleSheet,
-  ScrollView,
-  Text,
-  View,
-  TouchableHighlight,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableHighlight } from "react-native";
 import { globalStyles } from "../styles/global";
 import { useNavigation } from "@react-navigation/native";
 
@@ -22,21 +16,20 @@ const About = () => {
           style={styles.option}
           underlayColor={"#e0e0e0"}
           onPress={() => {
-            navigation.navigate("Contributers And Credits");
+            navigation.navigate("Background and Pronunciation");
           }}
         >
-          <Text style={globalStyles.text}>Contributers and Credits</Text>
+          <Text style={globalStyles.text}>Background and Pronunciation</Text>
         </TouchableHighlight>
         <TouchableHighlight
           style={styles.option}
           underlayColor={"#e0e0e0"}
           onPress={() => {
-            navigation.navigate("A Note on Editing Procedures");
+            navigation.navigate("Editing Procedures");
           }}
         >
-          <Text style={globalStyles.text}>A Note on Editing Procedures</Text>
+          <Text style={globalStyles.text}>Editing Procedures</Text>
         </TouchableHighlight>
-
         <TouchableHighlight
           style={styles.option}
           underlayColor={"#e0e0e0"}
@@ -49,6 +42,33 @@ const About = () => {
           <Text style={globalStyles.text}>
             Prefatory Material from Dr. Richard Wevers' Edition
           </Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.option}
+          underlayColor={"#e0e0e0"}
+          onPress={() => {
+            navigation.navigate("Contributers and Credits");
+          }}
+        >
+          <Text style={globalStyles.text}>Contributers and Credits</Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.option}
+          underlayColor={"#e0e0e0"}
+          onPress={() => {
+            navigation.navigate("LatinPerDiem");
+          }}
+        >
+          <Text style={globalStyles.text}>LatinPerDiem</Text>
+        </TouchableHighlight>
+        <TouchableHighlight
+          style={styles.option}
+          underlayColor={"#e0e0e0"}
+          onPress={() => {
+            navigation.navigate("MossMethod for Greek");
+          }}
+        >
+          <Text style={globalStyles.text}>MossMethod for Greek</Text>
         </TouchableHighlight>
       </View>
       <View style={{ backgroundColor: "#f9f9f9", height: "100%" }}></View>

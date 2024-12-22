@@ -2,9 +2,9 @@
   "expo": {
     "name": "Calvin's Latin Bible",
     "slug": "calvins-latin-bible",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/clb_app-icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -24,8 +24,10 @@
         "WRITE_EXTERNAL_STORAGE",
         "INTERNET"
       ],
+      "blockedPermissions": ["RECORD_AUDIO"],
+      "versionCode": 2,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/clb_app-icon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.avolzer.calvinslatinbible"
