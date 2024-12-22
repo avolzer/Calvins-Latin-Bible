@@ -5,6 +5,9 @@ import About from "../screens/about";
 import EditingNotes from "../screens/editingNotes";
 import ContributersAndCredits from "../screens/contributersAndCredits";
 import Forward from "../screens/forward";
+import BackgroundAndPronunciation from "../screens/backgroundAndPronunciation";
+import LatinPerDiem from "../screens/LatinPerDiem";
+import MossMethod from "../screens/mossMethod";
 
 const Stack = createStackNavigator();
 export default function AboutStack({}) {
@@ -23,14 +26,14 @@ export default function AboutStack({}) {
     >
       <Stack.Screen name="About" component={About} />
       <Stack.Screen
-        name="Contributers And Credits"
+        name="Contributers and Credits"
         component={ContributersAndCredits}
         options={{
           headerShown: true,
         }}
       />
       <Stack.Screen
-        name="A Note on Editing Procedures"
+        name="Editing Procedures"
         component={EditingNotes}
         options={{
           headerShown: true,
@@ -39,6 +42,27 @@ export default function AboutStack({}) {
       <Stack.Screen
         name="Prefatory Material from Dr. Richard Wevers' Edition"
         component={Forward}
+        options={{
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="Background and Pronunciation"
+        component={BackgroundAndPronunciation}
+        options={{
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="LatinPerDiem"
+        component={LatinPerDiem}
+        options={{
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name="MossMethod for Greek"
+        component={MossMethod}
         options={{
           headerShown: true,
         }}

@@ -9,14 +9,16 @@ export default function Forward() {
         style={globalStyles.container}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={globalStyles.subHeading}>Foreward</Text>
         <Text style={globalStyles.paragraph}>
-          After my publication of A Concordance to the Latin Bible of John
-          Calvin in 1985 I received numerous suggestions to publish the text of
-          John Calvin’s Latin Bible in a more convenient form. Though the entire
-          text of his Bible was published as part of that earlier six volume
-          work, many expressed interest in having available in more accessible
-          form the Bible text itself, separate from the bulky volumes of the
+          After my publication of{" "}
+          <Text style={{ fontStyle: "italic" }}>
+            A Concordance to the Latin Bible of John Calvin
+          </Text>{" "}
+          in 1985 I received numerous suggestions to publish the text of John
+          Calvin’s Latin Bible in a more convenient form. Though the entire text
+          of his Bible was published as part of that earlier six volume work,
+          many expressed interest in having available in more accessible form
+          the Bible text itself, separate from the bulky volumes of the
           concordance. This publication is my response to those suggestions.
         </Text>
         <Text style={globalStyles.paragraph}>
@@ -32,12 +34,14 @@ export default function Forward() {
           for most parts of the Bible in the course of writing his commentaries
           on the Bible. In his commentaries, Calvin’s Latin version of the
           Biblical text was presented in tandem with his comment. This Latin
-          text is, as T.H.L. Parker has demonstrated for the New Testament
-          (Calvin’s New Testament Commentaries, Grand Rapids, Mich: Eerdmans,
-          1971) an independent translation. Even though heavily reliant on the
-          Vulgate, and respectful of the work of Erasmus and others, it is
-          Calvin’s version based on his own study of currently available Greek
-          and Hebrew texts.
+          text is, as T.H.L. Parker has demonstrated for the New Testament (
+          <Text style={{ fontStyle: "italic" }}>
+            Calvin’s New Testament Commentaries
+          </Text>
+          , Grand Rapids, Mich: Eerdmans, 1971) an independent translation. Even
+          though heavily reliant on the Vulgate, and respectful of the work of
+          Erasmus and others, it is Calvin’s version based on his own study of
+          currently available Greek and Hebrew texts.
         </Text>
         <Text style={globalStyles.paragraph}>
           Thus Calvin’s Latin Bible does exist, but it is scattered throughout
@@ -59,17 +63,16 @@ export default function Forward() {
         </Text>
         <Text style={globalStyles.paragraph}>
           There is no distinctly modern edition of the text of Calvin’s
-          commentaries except for that of Romans done recently by T.H.L Parker{" "}
-          {"("}
+          commentaries except for that of Romans done recently by T.H.L Parker (
           <Text style={{ fontStyle: "italic" }}>
-            Iohannis Calvini Commentarius in Epistolam Pauli ad Romanos, Leiden:
-            E.J. Brill, 1981.
+            Iohannis Calvini Commentarius in Epistolam Pauli ad Romanos
           </Text>
-          {")"} For that reason the commentary text used to reconstruct the
-          Biblical text is the one given in J.J. Schipper’s edition of Calvin’s
-          works, done in Amsterdam, 1667-1671. It is a sound text and the best
-          available. Schipper’s text has been followed consistently, except for
-          the correcting of about three dozen obviously typographical errors.
+          , Leiden: E.J. Brill, 1981.) For that reason the commentary text used
+          to reconstruct the Biblical text is the one given in J.J. Schipper’s
+          edition of Calvin’s works, done in Amsterdam, 1667-1671. It is a sound
+          text and the best available. Schipper’s text has been followed
+          consistently, except for the correcting of about three dozen obviously
+          typographical errors.
         </Text>
         <Text style={globalStyles.subHeading}>Variant Readings</Text>
         <Text style={globalStyles.paragraph}>
