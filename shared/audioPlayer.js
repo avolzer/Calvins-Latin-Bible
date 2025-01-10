@@ -27,6 +27,7 @@ export default function MyPlayer(props) {
         console.log(error);
       }
     };
+
     if (state.playbackInstance) stop();
     const intervalId = intervalRef.current;
     setState((curState) => ({
@@ -51,12 +52,6 @@ export default function MyPlayer(props) {
     sliderValue: 0,
     isSeeking: false,
   });
-  const focused = useIsFocused();
-  useEffect(() => {
-    if (!focused) {
-      pause();
-    }
-  }, [focused]);
 
   const intervalRef = useRef();
   const [sequence, setSequence] = useState(0);
@@ -72,6 +67,9 @@ export default function MyPlayer(props) {
         await state.playbackInstance.unloadAsync();
       }
       try {
+        await Audio.setAudioModeAsync({
+          staysActiveInBackground: true,
+        });
         const sound = new Audio.Sound();
         await sound.loadAsync({
           uri: url,
@@ -98,6 +96,7 @@ export default function MyPlayer(props) {
         }
       } catch (error) {
         console.error("Error loading audio:", error);
+        alert(error);
       }
     }
     if (url) loadAudio();
@@ -283,7 +282,7 @@ export default function MyPlayer(props) {
           ></MaterialIcons>
         )}
       </View>
-      <View style={{ width: "100%", paddingHorizontal: 24 }}>
+      <View style={{ width: "100%", paddingHorizontal: 24, paddingBottom: 20 }}>
         <ProgressBar
           durationMillis={state.durationMillis}
           positionMillis={state.positionMillis}
