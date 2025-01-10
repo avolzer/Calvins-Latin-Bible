@@ -16,55 +16,49 @@ export default function ReaderHeader({ chapter, book }) {
   const { appLanguage } = useContext(SettingsContext);
 
   return (
-    <SafeAreaView>
+    <View
+      style={{
+        flexDirection: "row",
+        width: "100%",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingBottom: 15,
+        paddingTop: StatusBar.currentHeight,
+      }}
+    >
       <View
         style={{
-          flexDirection: "row",
-          width: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-          paddingTop: StatusBar.currentHeight + 10,
-          paddingBottom: 15,
+          flex: 1,
+          alignItems: "flex-start",
         }}
       >
-        <View>
-          <TouchableOpacity
-            style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
-            onPress={() => {
-              navigation.navigate("Chapter Selection", {
-                currentChapter: chapter,
-                currentBook: book,
-              });
-            }}
-          >
-            <Text
-              style={{
-                color: "black",
-                fontSize: 25,
-              }}
-            >{`${t(book)} ${
-              appLanguage == "English" || appLanguage == "en"
-                ? chapter
-                : romanizeNumeral(chapter)
-            }`}</Text>
-            <AntDesign
-              style={{ color: "#1B572F" }}
-              name="caretdown"
-              size={15}
-            />
-          </TouchableOpacity>
-        </View>
-
-        <View
-          style={{
-            position: "absolute",
-            top: StatusBar.currentHeight + 5,
-            left: 10,
+        <SearchButton />
+      </View>
+      <View style={{ flex: 2, alignItems: "center" }}>
+        <TouchableOpacity
+          style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+          onPress={() => {
+            navigation.navigate("Chapter Selection", {
+              currentChapter: chapter,
+              currentBook: book,
+            });
           }}
         >
-          <SearchButton />
-        </View>
+          <Text
+            style={{
+              color: "black",
+              fontSize: 25,
+            }}
+          >{`${t(book)} ${
+            appLanguage == "English" || appLanguage == "en"
+              ? chapter
+              : romanizeNumeral(chapter)
+          }`}</Text>
+          <AntDesign style={{ color: "#1B572F" }} name="caretdown" size={15} />
+        </TouchableOpacity>
       </View>
-    </SafeAreaView>
+
+      <View style={{ flex: 1 }} />
+    </View>
   );
 }

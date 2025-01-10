@@ -26,6 +26,7 @@ export default function SearchHeader({ navigation }) {
         onChangeText={(text) => onChangeText(text)}
         onSubmitEditing={submitEdit}
         autoFocus={true}
+        placeholder="Search Latin Text"
       />
     </View>
   );

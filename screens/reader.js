@@ -77,11 +77,18 @@ export default function Reader({ route }) {
 
   const removeLongmarks = (text) => {
     return text
-      .replaceAll("\u0101", "a")
-      .replaceAll("\u012b", "i")
-      .replaceAll("\u014d", "o")
-      .replaceAll("\u0113", "e")
-      .replaceAll("\u016b", "u");
+      .replaceAll("ā", "a")
+      .replaceAll("ī", "i")
+      .replaceAll("ō", "o")
+      .replaceAll("ē", "e")
+      .replaceAll("ū", "u")
+      .replaceAll("ȳ", "y")
+      .replaceAll("Ē", "E")
+      .replaceAll("Ō", "O")
+      .replaceAll("Ā", "A")
+      .replaceAll("Ī", "I")
+      .replaceAll("Ū", "U")
+      .replaceAll("Ȳ", "Y");
   };
 
   const currentChapter = LatinPsalms[chapter - 1];
@@ -231,7 +238,9 @@ export default function Reader({ route }) {
                   </Text>
                   {currentChapter.superscription ? (
                     <Text style={{ fontSize: fontSize, fontStyle: "italic" }}>
-                      {currentChapter.superscription}
+                      {showLongmarks
+                        ? currentChapter.superscription
+                        : removeLongmarks(currentChapter.superscription)}
                     </Text>
                   ) : (
                     <></>
@@ -272,13 +281,7 @@ export default function Reader({ route }) {
                     </Text>
                   ) : (
                     <>
-                      {appLanguage == "English" ? (
-                        <Text style={styles.chapterNum}>{chapter}</Text>
-                      ) : (
-                        <Text style={styles.chapterNum}>
-                          {romanizeUpper(chapter)}
-                        </Text>
-                      )}
+                      <Text style={styles.chapterNum}>{chapter}</Text>
                     </>
                   )}
                   {getKJVsubHeading() && (
@@ -398,40 +401,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     fontWeight: "bold",
   },
-
   scroll: {
     flex: 5,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 50,
-    marginBottom: 200,
-    backgroundColor: "white",
-    borderRadius: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
   },
 });

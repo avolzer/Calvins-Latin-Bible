@@ -24,9 +24,9 @@ export default function Settings() {
 
   return (
     <View style={globalStyles.mainContainer}>
-      <View style={[globalStyles.container, { paddingTop: 75 }]}>
-        <Text style={{ fontSize: 35, paddingBottom: 10 }}>{t("Settings")}</Text>
-        <Text style={styles.label}>{t("App Preferences")}</Text>
+      <View style={[globalStyles.container, { paddingTop: 100 }]}>
+        <Text style={styles.label}>{t("Settings")}</Text>
+
         <View style={styles.section}>
           <View style={styles.row}>
             <Text style={styles.text}>{t("App Language")}</Text>
@@ -44,11 +44,9 @@ export default function Settings() {
               </Picker>
             </View>
           </View>
-        </View>
-        <Text style={styles.label}>{t("Text Settings")}</Text>
-
-        <View style={styles.section}>
-          <View style={styles.row}>
+          <View
+            style={[styles.row, { borderTopWidth: 1, borderColor: "gray" }]}
+          >
             <Text style={styles.text}>{t("Show long marks")}</Text>
             <Switch
               style={{ flex: 1 }}
@@ -84,7 +82,7 @@ export default function Settings() {
             style={[styles.row, { borderTopWidth: 1, borderColor: "gray" }]}
           >
             <Text style={[styles.text, { paddingRight: 18 }]}>
-              {t("English Translation")}
+              {t("Translation")}
             </Text>
             <View style={styles.pickerContainer}>
               <Picker
