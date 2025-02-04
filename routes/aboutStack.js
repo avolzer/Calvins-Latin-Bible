@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import About from "../screens/about";
 import EditingNotes from "../screens/editingNotes";
-import ContributersAndCredits from "../screens/contributersAndCredits";
+import ContributorsAndCredits from "../screens/contributorsAndCredits";
 import Forward from "../screens/forward";
 import BackgroundAndPronunciation from "../screens/backgroundAndPronunciation";
 import LatinPerDiem from "../screens/LatinPerDiem";
@@ -26,8 +26,8 @@ export default function AboutStack({}) {
     >
       <Stack.Screen name="About" component={About} />
       <Stack.Screen
-        name="Contributers and Credits"
-        component={ContributersAndCredits}
+        name="Contributors and Credits"
+        component={ContributorsAndCredits}
         options={{
           headerShown: true,
         }}

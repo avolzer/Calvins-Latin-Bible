@@ -14,7 +14,7 @@ export default function LatinPerDiem({}) {
           supported by <Text style={{ fontStyle: "italic" }}>LatinPerDiem</Text>
           . Since 2015, LPD has been bringing a worldwide audience manageable
           Latin and Greek lessons in about four minutes, with in-depth lexical,
-          grammatic, syntactic, and semantic anlaysis. With now more than 2,100
+          grammatic, syntactic, and semantic analysis. With now more than 2,100
           lessons available on our channel,{" "}
           <Text
             style={styles.link}
