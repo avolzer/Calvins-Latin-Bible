@@ -29,7 +29,7 @@ export default function Settings() {
 
         <View style={styles.section}>
           <View style={styles.row}>
-            <Text style={styles.text}>{t("App Language")}</Text>
+            <Text style={styles.text}>{t("App language")}</Text>
             <View style={styles.pickerContainer}>
               <Picker
                 selectedValue={appLanguage}
@@ -62,7 +62,7 @@ export default function Settings() {
           <View
             style={[styles.row, { borderTopWidth: 1, borderColor: "gray" }]}
           >
-            <Text style={styles.text}>{t("Font Size")}</Text>
+            <Text style={styles.text}>{t("Font size")}</Text>
             <View style={styles.pickerContainer}>
               <Picker
                 selectedValue={fontSize}

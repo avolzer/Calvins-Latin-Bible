@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Platform } from "react-native";
 import { Audio } from "expo-av";
 import { AntDesign } from "@expo/vector-icons";
 import ProgressBar from "./progressBar";
@@ -67,9 +67,11 @@ export default function MyPlayer(props) {
         await state.playbackInstance.unloadAsync();
       }
       try {
-        await Audio.setAudioModeAsync({
-          staysActiveInBackground: true,
-        });
+        if (Platform.OS === "android") {
+          await Audio.setAudioModeAsync({
+            staysActiveInBackground: true,
+          });
+        }
         const sound = new Audio.Sound();
         await sound.loadAsync({
           uri: url,
@@ -203,6 +205,28 @@ export default function MyPlayer(props) {
     }
   };
 
+  const PlayFromPos = async (time) => {
+    await state.playbackInstance.playFromPositionAsync(
+      time * state.durationMillis
+    );
+    setSequence(Math.round(time * state.durationMillis) / 1000);
+
+    if (state.reachedEnd) {
+      setState((curState) => ({ ...curState, reachedEnd: false }));
+    }
+
+    if (!state.isPlaying) {
+      await pause(state.playbackInstance);
+    } else {
+      interval(state.playbackInstance);
+
+      setState((curState) => ({
+        ...curState,
+        isPlaying: true,
+      }));
+    }
+  };
+
   return (
     <View
       style={{
@@ -220,21 +244,19 @@ export default function MyPlayer(props) {
           paddingTop: 20,
         }}
       >
-        {props.chapter > 1 ? (
-          <TouchableOpacity onPress={props.onPrevious}>
-            <MaterialIcons
-              name="skip-previous"
-              size={30}
-              style={styles.controls}
-            ></MaterialIcons>
-          </TouchableOpacity>
-        ) : (
+        <TouchableOpacity
+          onPress={async () => {
+            clearInterval(intervalRef.current);
+            PlayFromPos(0);
+          }}
+        >
           <MaterialIcons
             name="skip-previous"
             size={30}
-            style={{ color: "white" }}
+            style={styles.controls}
           ></MaterialIcons>
-        )}
+        </TouchableOpacity>
+
         {state.isPlaying ? (
           <AntDesign
             style={styles.controls}
@@ -290,27 +312,7 @@ export default function MyPlayer(props) {
           onSlidingStart={async () => {
             clearInterval(intervalRef.current);
           }}
-          onSeek={async (time) => {
-            await state.playbackInstance.playFromPositionAsync(
-              time * state.durationMillis
-            );
-            setSequence(Math.round(time * state.durationMillis) / 1000);
-
-            if (state.reachedEnd) {
-              setState((curState) => ({ ...curState, reachedEnd: false }));
-            }
-
-            if (!state.isPlaying) {
-              await pause(state.playbackInstance);
-            } else {
-              interval(state.playbackInstance);
-
-              setState((curState) => ({
-                ...curState,
-                isPlaying: true,
-              }));
-            }
-          }}
+          onSeek={(time) => PlayFromPos(time)}
         />
       </View>
     </View>
