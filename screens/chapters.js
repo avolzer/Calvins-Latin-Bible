@@ -54,7 +54,6 @@ export default function ChapterSelection({ route }) {
     "Joshua",
     "I Samuel",
     "Job",
-    "Psalms",
     "Isaiah",
     "Jeremiah",
     "Lamentations",
@@ -141,16 +140,25 @@ export default function ChapterSelection({ route }) {
               style={{
                 ...styles.numbers,
                 ...{
-                  color: currentChapter == item ? "dodgerblue" : "black",
-                  textDecorationLine:
-                    currentChapter == item ? "underline" : "none",
+                  color: currentChapter == item ? "#1B572F" : "black",
+                  fontWeight: currentChapter == item ? "bold" : "normal",
                 },
               }}
             >
               {item}
             </Text>
           ) : (
-            <Text style={styles.numbers}>{romanizeNumeral(item)}</Text>
+            <Text
+              style={{
+                ...styles.numbers,
+                ...{
+                  color: currentChapter == item ? "#1B572F" : "black",
+                  fontWeight: currentChapter == item ? "bold" : "normal",
+                },
+              }}
+            >
+              {romanizeNumeral(item)}
+            </Text>
           )}
         </TouchableOpacity>
       </View>
@@ -189,6 +197,9 @@ export default function ChapterSelection({ route }) {
           ]}
           onPress={() => {
             setSelected("chapters");
+            let book = currentBook;
+            if (book == "Psalm") book = "Psalms";
+            navigation.setOptions({ headerTitle: t(book) });
           }}
         >
           <Text
@@ -229,16 +240,16 @@ export default function ChapterSelection({ route }) {
                         style={[
                           styles.listItemText,
                           {
+                            fontWeight:
+                              currentBook == book ||
+                              (currentBook == "Psalm" && book == "Psalms")
+                                ? "bold"
+                                : "normal",
                             color:
                               currentBook == book ||
                               (currentBook == "Psalm" && book == "Psalms")
-                                ? "blue"
+                                ? "#1B572F"
                                 : "black",
-                            textDecorationLine:
-                              currentBook == book ||
-                              (currentBook == "Psalm" && book == "Psalms")
-                                ? "underline"
-                                : "none",
                           },
                         ]}
                       >
@@ -299,16 +310,16 @@ export default function ChapterSelection({ route }) {
               style={[
                 styles.testament,
                 {
-                  borderRightWidth: 1,
-                  borderColor: "gray",
+                  borderColor: "#1B572F",
                   borderTopWidth: testament == "Old" ? 0 : 1,
+                  backgroundColor: testament == "Old" ? "#1B572F" : "white",
                 },
               ]}
             >
               <Text
                 style={{
                   fontSize: 16,
-                  color: "black",
+                  color: testament == "Old" ? "white" : "#1B572F",
                 }}
               >
                 {t("Old")}
@@ -316,8 +327,7 @@ export default function ChapterSelection({ route }) {
               <Text
                 style={{
                   fontSize: 16,
-
-                  color: "black",
+                  color: testament == "Old" ? "white" : "#1B572F",
                 }}
               >
                 {t("Testament")}
@@ -330,15 +340,16 @@ export default function ChapterSelection({ route }) {
               style={[
                 styles.testament,
                 {
+                  borderColor: "#1B572F",
                   borderTopWidth: testament == "New" ? 0 : 1,
+                  backgroundColor: testament == "New" ? "#1B572F" : "white",
                 },
               ]}
             >
               <Text
                 style={{
                   fontSize: 16,
-
-                  color: "Black",
+                  color: testament == "New" ? "white" : "#1B572F",
                 }}
               >
                 {t("New")}
@@ -346,8 +357,7 @@ export default function ChapterSelection({ route }) {
               <Text
                 style={{
                   fontSize: 16,
-
-                  color: "Black",
+                  color: testament == "New" ? "white" : "#1B572F",
                 }}
               >
                 {t("Testament")}
@@ -375,14 +385,13 @@ const styles = StyleSheet.create({
     width: "100%",
     flexWrap: "wrap",
     flexDirection: "row",
-    justifyContent: "center",
   },
   wrapper: {
     alignItems: "center",
     width: 80,
   },
   tab: {
-    borderColor: "blue",
+    borderColor: "#4BA669",
     paddingHorizontal: 10,
     marginLeft: 20,
     paddingBottom: 15,
@@ -399,6 +408,6 @@ const styles = StyleSheet.create({
   testament: {
     flex: 1,
     alignItems: "center",
-    paddingVertical: 15,
+    paddingVertical: 10,
   },
 });

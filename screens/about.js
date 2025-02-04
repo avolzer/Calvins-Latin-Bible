@@ -47,10 +47,10 @@ const About = () => {
           style={styles.option}
           underlayColor={"#e0e0e0"}
           onPress={() => {
-            navigation.navigate("Contributers and Credits");
+            navigation.navigate("Contributors and Credits");
           }}
         >
-          <Text style={globalStyles.text}>Contributers and Credits</Text>
+          <Text style={globalStyles.text}>Contributors and Credits</Text>
         </TouchableHighlight>
         <TouchableHighlight
           style={styles.option}

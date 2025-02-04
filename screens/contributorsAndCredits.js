@@ -2,7 +2,7 @@ import React from "react";
 import { ScrollView, Text, View } from "react-native";
 import { globalStyles } from "../styles/global";
 
-export default function ContributersAndCredits() {
+export default function ContributorsAndCredits() {
   return (
     <View style={globalStyles.mainContainer}>
       <ScrollView
