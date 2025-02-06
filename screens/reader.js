@@ -19,7 +19,6 @@ import KJVbible from "../assets/kjv.json";
 import "../assets/i18n/i18n";
 import { useTranslation } from "react-i18next";
 import LatinPsalms from "../assets/psalms-latin.json";
-import { romanizeNumeral } from "../tools/romanizeNumeral";
 import { removeLongmarks } from "../tools/removeLongmarks";
 
 export default function Reader({ route }) {
@@ -33,8 +32,7 @@ export default function Reader({ route }) {
   const navigation = useNavigation();
   const { t } = useTranslation();
 
-  const { appLanguage, showLongmarks, fontSize, translation } =
-    useContext(SettingsContext);
+  const { showLongmarks, fontSize, translation } = useContext(SettingsContext);
 
   const playerRef = useRef();
   const mainScrollView = useRef();
@@ -333,7 +331,7 @@ const LanguageToggle = ({ lang, setLang, t }) => {
             paddingVertical: 8,
             borderTopLeftRadius: 20,
             borderBottomLeftRadius: 20,
-            backgroundColor: lang === "Latin" ? "#1B572F" : "white",
+            backgroundColor: lang === "English" ? "white" : "#1B572F",
           }}
         >
           <Text style={{ color: lang === "Latin" ? "white" : "black" }}>
