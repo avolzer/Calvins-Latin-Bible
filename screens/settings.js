@@ -100,7 +100,7 @@ export default function Settings() {
     );
   };
   const fontSizes = {
-    12: "Small",
+    14: "Small",
     20: "Medium",
     24: "Large",
     30: "Extra Large",

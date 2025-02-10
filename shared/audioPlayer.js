@@ -11,6 +11,14 @@ import { ref, getDownloadURL, getStorage } from "firebase/storage";
 
 export default function MyPlayer(props) {
   initializeApp(firebaseConfig);
+  const numChaps = {
+    Psalms: 150,
+    Mark: 16,
+  };
+  const prefix = {
+    Psalms: "PS",
+    Mark: "MARK",
+  };
 
   const [url, setUrl] = useState();
 
@@ -18,8 +26,13 @@ export default function MyPlayer(props) {
     const getAudio = async () => {
       try {
         const storage = getStorage();
+        let folder = "";
+        if (props.book !== "Psalms") folder = `${props.book}/`;
 
-        const r = ref(storage, `PS${props.chapter}_FINAL.mp3`);
+        const r = ref(
+          storage,
+          `${folder}${prefix[props.book]}${props.chapter}_FINAL.mp3`
+        );
         await getDownloadURL(r).then((res) => {
           setUrl(res);
         });
@@ -285,7 +298,7 @@ export default function MyPlayer(props) {
             )}
           </>
         )}
-        {props.chapter !== 150 ? (
+        {props.chapter !== numChaps[props.book] ? (
           <TouchableOpacity
             style={{ justifyContent: "center" }}
             onPress={props.onNext}
@@ -300,7 +313,7 @@ export default function MyPlayer(props) {
           <MaterialIcons
             name="skip-next"
             size={30}
-            style={styles.controls}
+            style={{ color: "white" }}
           ></MaterialIcons>
         )}
       </View>

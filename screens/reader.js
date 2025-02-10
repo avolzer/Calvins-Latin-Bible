@@ -19,7 +19,9 @@ import KJVbible from "../assets/kjv.json";
 import "../assets/i18n/i18n";
 import { useTranslation } from "react-i18next";
 import LatinPsalms from "../assets/psalms-latin.json";
+import LatinMark from "../assets/mark-latin.json";
 import { removeLongmarks } from "../tools/removeLongmarks";
+import ESVmark from "../assets/ESV-mark.json";
 
 export default function Reader({ route }) {
   const { width } = useWindowDimensions();
@@ -33,30 +35,34 @@ export default function Reader({ route }) {
   const { t } = useTranslation();
 
   const { showLongmarks, fontSize, translation } = useContext(SettingsContext);
+  const superFontSize = Math.floor(fontSize * 0.6);
 
   const playerRef = useRef();
   const mainScrollView = useRef();
   const flatListRef = useRef(null);
 
   const [lang, setLang] = useState("Latin");
-  const [currentBook, setCurrentBook] = useState("Psalm");
+  const [currentBook, setCurrentBook] = useState("Psalms");
   const [chapter, setChapter] = useState(1);
-  const superFontSize = Math.floor(fontSize * 0.6);
+
+  const books = { Psalms: LatinPsalms, Mark: LatinMark };
+
+  const ESVtext = {
+    Psalms: ESVpsalms,
+    Mark: ESVmark,
+  };
 
   const superScript = {
-    textAlignVertical: "top",
+    verticalAlign: "top",
     fontSize: superFontSize,
     lineHeight: parseInt(fontSize + fontSize * 1.2, 10),
     paddingRight: 10,
   };
 
   const regular = {
-    textAlignVertical: "bottom",
     fontSize: fontSize,
     lineHeight: parseInt(fontSize + fontSize * 1.2, 10),
   };
-
-  const curChap = LatinPsalms[chapter - 1];
 
   const getLatintext = (ch) => {
     var verses = "";
@@ -79,10 +85,11 @@ export default function Reader({ route }) {
   };
   const getESVsubheading = (ch) => {
     var subheading = "";
-    const firstVerse = ESVpsalms.filter((verse) => verse.chapter == ch).find(
-      (verse) => verse.verse == "1"
-    ).text;
-    if (firstVerse.startsWith("<subheading>")) {
+    const text = ESVtext[currentBook];
+    const firstVerse = text
+      .filter((verse) => verse.chapter == ch)
+      .find((verse) => verse.verse == "1" || verse.verse == "¹")?.text;
+    if (firstVerse && firstVerse.startsWith("<subheading>")) {
       subheading = firstVerse.substring(
         firstVerse.indexOf("<subheading>") + 12,
         firstVerse.lastIndexOf("</subheading>")
@@ -90,23 +97,39 @@ export default function Reader({ route }) {
     }
     return subheading;
   };
-  const getESVtext = (ch) => {
-    const curChap = ESVpsalms.filter((verse) => verse.chapter == ch);
-    var verses = [];
 
-    curChap.forEach((verse) => {
-      var text = verse.text
-        .replace("§", "\n")
-        .replaceAll("¶", "\n")
-        .replaceAll("→", "\t\t");
+  const getESVtext = (ch) => {
+    const esv = ESVtext[currentBook];
+    const curChap = esv.filter((verse) => verse.chapter == ch);
+
+    return curChap.map((verse) => {
+      var text = verse.text.replace("§", "\n").replaceAll("→", "\t\t");
       if (verse.verse == "1") {
         if (text.startsWith("<subheading>")) {
           text = text.substring(text.lastIndexOf("</subheading>") + 13);
         }
         text = text.trimStart();
       }
-      verses.push(text);
+      var newParagraph = false;
+      if (text.startsWith("¶")) {
+        newParagraph = true;
+        text = text.replace("¶", "");
+      }
+
+      return (
+        <Text key={verse.passage}>
+          {newParagraph && "\n\n"}
+          <Text style={regular}>{verse.verse}</Text>
+          <Text style={regular}>{text.replaceAll("¶", "\n")} </Text>
+        </Text>
+      );
     });
+  };
+
+  const getESVtextPsalms = (ch) => {
+    const text = ESVtext[currentBook];
+    const curChap = text.filter((verse) => verse.chapter == ch);
+
     return curChap.map((verse) => {
       var text = verse.text
         .replace("§", "\n")
@@ -170,6 +193,15 @@ export default function Reader({ route }) {
         });
       }
     }
+    if (route.params && route.params.book) {
+      setCurrentBook(route.params.book);
+      if (flatListRef.current) {
+        flatListRef.current.scrollToIndex({
+          index: route.params.chap - 1,
+          animated: false,
+        });
+      }
+    }
   }, [route.params]);
 
   useEffect(() => {
@@ -219,7 +251,10 @@ export default function Reader({ route }) {
             <View style={{ paddingHorizontal: 16, paddingTop: 16 }}>
               {translation === "ESV" ? (
                 <>
-                  <Text style={styles.chapterNum}>Psalm {chapter.chapter}</Text>
+                  <Text style={styles.chapterNum}>
+                    {currentBook == "Psalms" ? "Psalm" : currentBook}{" "}
+                    {chapter.chapter}
+                  </Text>
                   {getESVsubheading(chapter.chapter) && (
                     <Text style={{ fontSize: fontSize, fontStyle: "italic" }}>
                       {getESVsubheading(chapter.chapter)}
@@ -238,10 +273,18 @@ export default function Reader({ route }) {
                 </>
               )}
             </View>
-            <View style={{ paddingRight: 20, width: "100%" }}>
-              {translation === "ESV"
-                ? getESVtext(chapter.chapter)
-                : getKJVtext(chapter.chapter)}
+            <View style={{ width: "100%" }}>
+              <Text>
+                {translation === "ESV" ? (
+                  <>
+                    {currentBook == "Psalms"
+                      ? getESVtextPsalms(chapter.chapter)
+                      : getESVtext(chapter.chapter)}
+                  </>
+                ) : (
+                  getKJVtext(chapter.chapter)
+                )}
+              </Text>
             </View>
           </ScrollView>
         )}
@@ -263,7 +306,7 @@ export default function Reader({ route }) {
       <View style={{ flex: 1 }}>
         <FlatList
           ref={flatListRef}
-          data={LatinPsalms}
+          data={books[currentBook]}
           renderItem={({ item }) => renderChapter(item)}
           horizontal
           pagingEnabled
@@ -289,6 +332,7 @@ export default function Reader({ route }) {
       <View>
         <MyPlayer
           chapter={chapter}
+          book={currentBook}
           style={{ flex: 1 }}
           playerRef={playerRef}
           onNext={() => {

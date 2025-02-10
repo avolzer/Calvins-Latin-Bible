@@ -24,6 +24,11 @@ export default function ChapterSelection({ route }) {
   const [selectedBook, setSelectedBook] = useState(currentBook);
   const [testament, setTestament] = useState("Old");
 
+  const numChaps = {
+    Psalms: 150,
+    Mark: 16,
+  };
+
   useEffect(() => {
     let book = currentBook;
     if (currentBook == "Psalm") book = "Psalms";
@@ -41,10 +46,10 @@ export default function ChapterSelection({ route }) {
   }, [testament]);
 
   var chapters = [];
-  for (var i = 1; i <= 150; i++) {
+  for (var i = 1; i <= numChaps[selectedBook]; i++) {
     chapters.push(i);
   }
-  const AvailableBooks = ["Psalms"];
+  const AvailableOT = ["Psalms"];
   const ComingSoonOT = [
     "Genesis",
     "Exodus",
@@ -72,9 +77,9 @@ export default function ChapterSelection({ route }) {
     "Zachariah",
     "Malachi",
   ];
+  const AvailableNT = ["Mark"];
   const ComingSoonNT = [
     "Matthew",
-    "Mark",
     "Luke",
     "John",
     "Acts",
@@ -101,8 +106,9 @@ export default function ChapterSelection({ route }) {
 
   const pressHandler = (ch) => {
     navigation.navigate("Reader", {
-      name: "Psalm " + ch,
+      name: `${selectedBook} ${ch}`,
       chap: ch,
+      book: selectedBook,
     });
   };
 
@@ -225,7 +231,7 @@ export default function ChapterSelection({ route }) {
                 ref={mainScrollView}
               >
                 <Text style={styles.subheading}>{t("Available")} </Text>
-                {AvailableBooks.map((book) => {
+                {AvailableOT.map((book) => {
                   return (
                     <TouchableOpacity
                       key={book}
@@ -282,6 +288,41 @@ export default function ChapterSelection({ route }) {
                 }}
                 ref={mainScrollView}
               >
+                <Text style={styles.subheading}>{t("Available")} </Text>
+
+                {AvailableNT.map((book) => {
+                  return (
+                    <TouchableOpacity
+                      key={book}
+                      style={styles.listItem}
+                      onPress={() => {
+                        setSelectedBook(book);
+                        setSelected("chapters");
+                        navigation.setOptions({ headerTitle: t(book) });
+                      }}
+                    >
+                      <Text
+                        style={[
+                          styles.listItemText,
+                          {
+                            fontWeight:
+                              currentBook == book ||
+                              (currentBook == "Psalm" && book == "Psalms")
+                                ? "bold"
+                                : "normal",
+                            color:
+                              currentBook == book ||
+                              (currentBook == "Psalm" && book == "Psalms")
+                                ? "#1B572F"
+                                : "black",
+                          },
+                        ]}
+                      >
+                        {t(book)}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
                 <Text style={styles.subheading}>{t("Coming Soon")} </Text>
                 {ComingSoonNT.map((book) => {
                   return (
