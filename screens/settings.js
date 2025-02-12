@@ -41,7 +41,7 @@ export default function Settings() {
       {
         options,
         cancelButtonIndex,
-        destructiveButtonIndex: selectedIndex,
+        destructiveButtonIndex: cancelButtonIndex,
       },
       (selectedIndex) => {
         if (selectedIndex !== cancelButtonIndex) {
@@ -69,7 +69,7 @@ export default function Settings() {
       {
         options,
         cancelButtonIndex,
-        destructiveButtonIndex: selectedIndex,
+        destructiveButtonIndex: cancelButtonIndex,
       },
       (selectedIndex) => {
         if (selectedIndex in indexToFontSize) {
@@ -90,7 +90,7 @@ export default function Settings() {
       {
         options,
         cancelButtonIndex,
-        destructiveButtonIndex: selectedIndex,
+        destructiveButtonIndex: cancelButtonIndex,
       },
       (selectedIndex) => {
         if (selectedIndex !== cancelButtonIndex) {
@@ -100,7 +100,7 @@ export default function Settings() {
     );
   };
   const fontSizes = {
-    12: "Small",
+    14: "Small",
     20: "Medium",
     24: "Large",
     30: "Extra Large",
