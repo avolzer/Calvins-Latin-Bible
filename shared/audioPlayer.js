@@ -51,7 +51,7 @@ export default function MyPlayer(props) {
     setSequence(0);
     clearInterval(intervalId);
     getAudio();
-  }, [props.chapter]);
+  }, [props.chapter, props.book]);
 
   const [state, setState] = useState({
     isPlaying: false,

@@ -41,7 +41,7 @@ export default function Settings() {
       {
         options,
         cancelButtonIndex,
-        destructiveButtonIndex: selectedIndex,
+        destructiveButtonIndex: cancelButtonIndex,
       },
       (selectedIndex) => {
         if (selectedIndex !== cancelButtonIndex) {
@@ -69,7 +69,7 @@ export default function Settings() {
       {
         options,
         cancelButtonIndex,
-        destructiveButtonIndex: selectedIndex,
+        destructiveButtonIndex: cancelButtonIndex,
       },
       (selectedIndex) => {
         if (selectedIndex in indexToFontSize) {
@@ -90,7 +90,7 @@ export default function Settings() {
       {
         options,
         cancelButtonIndex,
-        destructiveButtonIndex: selectedIndex,
+        destructiveButtonIndex: cancelButtonIndex,
       },
       (selectedIndex) => {
         if (selectedIndex !== cancelButtonIndex) {

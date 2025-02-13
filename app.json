@@ -20,7 +20,11 @@
     },
     "android": {
       "permissions": ["INTERNET"],
-      "blockedPermissions": ["RECORD_AUDIO"],
+      "blockedPermissions": [
+        "RECORD_AUDIO",
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO"
+      ],
       "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/clb_app-icon.png",

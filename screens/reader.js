@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext, memo } from "react";
 import {
   StyleSheet,
   View,
@@ -44,6 +44,8 @@ export default function Reader({ route }) {
   const [lang, setLang] = useState("Latin");
   const [currentBook, setCurrentBook] = useState("Psalms");
   const [chapter, setChapter] = useState(1);
+  const [flatListReady, setFlatListReady] = useState(false);
+  const [bookData, setBookData] = useState([]);
 
   const books = { Psalms: LatinPsalms, Mark: LatinMark };
 
@@ -61,7 +63,7 @@ export default function Reader({ route }) {
 
   const regular = {
     fontSize: fontSize,
-    lineHeight: parseInt(fontSize + fontSize * 1.2, 10),
+    lineHeight: parseInt(fontSize + fontSize, 10),
   };
 
   const getLatintext = (ch) => {
@@ -72,14 +74,17 @@ export default function Reader({ route }) {
 
     return ch.verses.map((verse) => {
       return (
-        <View style={{ flexDirection: "row" }} key={verse.verse}>
+        <Text
+          style={{ flexDirection: "row", paddingBottom: fontSize / 2 }}
+          key={verse.verse}
+        >
           <Text style={[superScript, { flexWrap: "wrap" }]}>{verse.verse}</Text>
           <Text style={regular}>
             {showLongmarks
               ? verse.text.trim()
               : removeLongmarks(verse.text.trim())}
           </Text>
-        </View>
+        </Text>
       );
     });
   };
@@ -158,16 +163,22 @@ export default function Reader({ route }) {
 
   const getKJVtext = (ch) => {
     const curChap = KJVbible.verses
-      .filter((verse) => verse.book_name == "Psalms")
+      .filter((verse) => verse.book_name == currentBook)
       .filter((verse) => verse.chapter == ch)
-      .filter((verse) => verse.verse > 0);
+      .filter((verse) => verse.verse != "⁰");
 
     return curChap.map((verse) => {
-      var text = verse.text.replace("¶", "");
+      var text = verse.text.replace("¶ ", "");
 
       return (
-        <View style={{ flexDirection: "row" }} key={verse.verse}>
-          <Text style={[superScript, { flexWrap: "wrap" }]}>{verse.verse}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            paddingBottom: fontSize / 2,
+          }}
+          key={verse.verse}
+        >
+          <Text style={[regular, { paddingRight: 4 }]}>{verse.verse}</Text>
           <Text style={regular}>{text}</Text>
         </View>
       );
@@ -177,32 +188,39 @@ export default function Reader({ route }) {
   const getKJVsubHeading = (ch) => {
     const subheading = KJVbible.verses.find(
       (verse) =>
-        verse.book_name == "Psalms" && verse.chapter == ch && verse.verse == 0
+        verse.book_name == currentBook &&
+        verse.chapter == ch &&
+        verse.verse == 0
     );
 
     return subheading?.text || undefined;
   };
 
   useEffect(() => {
-    if (route.params && route.params.chap) {
-      setChapter(route.params.chap);
-      if (flatListRef.current) {
-        flatListRef.current.scrollToIndex({
-          index: route.params.chap - 1,
-          animated: false,
-        });
+    if (route.params) {
+      setFlatListReady(false);
+      if (route.params.book) {
+        setCurrentBook(route.params.book);
       }
-    }
-    if (route.params && route.params.book) {
-      setCurrentBook(route.params.book);
-      if (flatListRef.current) {
-        flatListRef.current.scrollToIndex({
-          index: route.params.chap - 1,
-          animated: false,
-        });
+      if (route.params.chap) {
+        setChapter(route.params.chap);
+        if (route.params.book == currentBook && flatListRef.current) {
+          flatListRef.current.scrollToIndex({
+            index: route.params.chap - 1,
+            animated: false,
+          });
+        } else {
+          setBookData([]);
+        }
       }
     }
   }, [route.params]);
+
+  useEffect(() => {
+    if (!books[currentBook]) return;
+
+    setBookData(books[currentBook]);
+  }, [currentBook]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("didFocus", () => {});
@@ -263,8 +281,6 @@ export default function Reader({ route }) {
                 </>
               ) : (
                 <>
-                  <Text style={styles.chapterNum}>{chapter.chapter}</Text>
-
                   {getKJVsubHeading(chapter.chapter) && (
                     <Text style={{ fontSize: fontSize, fontStyle: "italic" }}>
                       {getKJVsubHeading(chapter.chapter)}
@@ -291,6 +307,7 @@ export default function Reader({ route }) {
       </View>
     );
   };
+  const MemoizedChapter = memo(({ item }) => renderChapter(item));
 
   return (
     <View style={globalStyles.mainContainer}>
@@ -304,30 +321,47 @@ export default function Reader({ route }) {
       <LanguageToggle lang={lang} setLang={(l) => setLang(l)} t={t} />
 
       <View style={{ flex: 1 }}>
-        <FlatList
-          ref={flatListRef}
-          data={books[currentBook]}
-          renderItem={({ item }) => renderChapter(item)}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          bounces={false}
-          keyExtractor={(item) => item.chapter}
-          onViewableItemsChanged={viewableItemsChanged}
-          getItemLayout={(data, index) => ({
-            length: width,
-            offset: width * index,
-            index,
-          })}
-          onScroll={() => {
-            Animated.event(
-              [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-              {
-                useNativeDriver: false,
+        {bookData.length > 0 && (
+          <FlatList
+            ref={flatListRef}
+            data={bookData}
+            extraData={currentBook}
+            renderItem={({ item }) => <MemoizedChapter item={item} />}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            bounces={false}
+            initialNumToRender={5}
+            keyExtractor={(item) => item.chapter}
+            onViewableItemsChanged={viewableItemsChanged}
+            onContentSizeChange={() => {
+              setFlatListReady(true);
+              if (
+                books[currentBook] &&
+                books[currentBook].length > 0 &&
+                route.params
+              ) {
+                flatListRef.current.scrollToIndex({
+                  index: route.params.chap - 1,
+                  animated: false,
+                });
               }
-            );
-          }}
-        />
+            }}
+            getItemLayout={(data, index) => ({
+              length: width,
+              offset: width * index,
+              index,
+            })}
+            onScroll={() => {
+              Animated.event(
+                [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                {
+                  useNativeDriver: false,
+                }
+              );
+            }}
+          />
+        )}
       </View>
       <View>
         <MyPlayer
