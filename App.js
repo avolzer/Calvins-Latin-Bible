@@ -1,6 +1,6 @@
 import "./gesture-handler";
 import React, { useState, useEffect } from "react";
-import { View, SafeAreaView } from "react-native";
+import { View, SafeAreaView, Platform } from "react-native";
 import Navigator from "./routes/tabNav";
 import { SettingsContextProvider } from "./context/settingsContext";
 import {
@@ -10,6 +10,7 @@ import {
 import LottieView from "lottie-react-native";
 import * as SplashScreen from "expo-splash-screen";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import "intl-pluralrules";
 
 SplashScreen.preventAutoHideAsync();
 const ref = createNavigationContainerRef();
