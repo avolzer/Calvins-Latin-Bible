@@ -5,9 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Modal,
-  Pressable,
-  Button,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SettingsContext } from "../context/settingsContext";
@@ -15,13 +12,11 @@ import "../assets/i18n/i18n";
 import { useTranslation } from "react-i18next";
 import { romanizeNumeral } from "../tools/romanizeNumeral";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import Purchases from "react-native-purchases";
 
-import { MaterialIcons } from "@expo/vector-icons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
-import useRevenueCat from "../shared/useRevenueCat";
+import useRevenueCat from "../hooks/useRevenueCat";
+import SubscriptionModal from "../shared/subscriptionModal";
 
 export default function ChapterSelection({ route }) {
   const { currentChapter } = route.params;
@@ -30,12 +25,17 @@ export default function ChapterSelection({ route }) {
   const navigation = useNavigation();
   const { t, i18n } = useTranslation();
   const mainScrollView = useRef();
-  const { currentOffering, customerInfo, isProMember } = useRevenueCat();
-  // const isProMember = false;
+  const { isProMember } = useRevenueCat();
+  // const isProMember = true;
 
-  const [selected, setSelected] = useState("chapters");
+  const AvailableOT = ["Psalms"];
+  const AvailableNT = ["Mark"];
+
+  const [selected, setSelected] = useState(isProMember ? "books" : "chapters");
   const [selectedBook, setSelectedBook] = useState(currentBook);
-  const [testament, setTestament] = useState("Old");
+  const [testament, setTestament] = useState(
+    AvailableOT.includes(currentBook) ? "Old" : "New"
+  );
   const [modalVisible, setModalVisible] = useState(false);
 
   const numChaps = {
@@ -48,23 +48,6 @@ export default function ChapterSelection({ route }) {
     if (currentBook == "Psalm") book = "Psalms";
     navigation.setOptions({ headerTitle: t(book) });
   }, []);
-
-  const handleMonthlyPurchase = async () => {
-    if (!currentOffering?.monthly) return;
-
-    const purchaserInfo = await Purchases.purchasePackage(
-      currentOffering.monthly
-    );
-
-    console.log(
-      "MONTHLY SUB PURCHASED >>",
-      purchaserInfo.customerInfo.entitlements.active
-    );
-
-    if (purchaserInfo.customerInfo.entitlements.active.pro) {
-      setModalVisible(false);
-    }
-  };
 
   useEffect(() => {
     if (mainScrollView.current) {
@@ -80,7 +63,6 @@ export default function ChapterSelection({ route }) {
   for (var i = 1; i <= numChaps[selectedBook]; i++) {
     chapters.push(i);
   }
-  const AvailableOT = ["Psalms"];
   const ComingSoonOT = [
     "Genesis",
     "Exodus",
@@ -108,7 +90,6 @@ export default function ChapterSelection({ route }) {
     "Zachariah",
     "Malachi",
   ];
-  const AvailableNT = ["Mark"];
   const ComingSoonNT = [
     "Matthew",
     "Luke",
@@ -205,8 +186,14 @@ export default function ChapterSelection({ route }) {
               style={{
                 ...styles.numbers,
                 ...{
-                  color: currentChapter == item ? "#1B572F" : "black",
-                  fontWeight: currentChapter == item ? "bold" : "normal",
+                  color:
+                    currentChapter == item && currentBook == selectedBook
+                      ? "#1B572F"
+                      : "black",
+                  fontWeight:
+                    currentChapter == item && currentBook == selectedBook
+                      ? "bold"
+                      : "normal",
                 },
               }}
             >
@@ -414,7 +401,8 @@ export default function ChapterSelection({ route }) {
                               style={[
                                 styles.listItemText,
                                 {
-                                  fontWeight: "bold",
+                                  fontWeight:
+                                    currentBook == book ? "bold" : "normal",
                                   color:
                                     currentBook == book ? "#1B572F" : "black",
                                 },
@@ -524,119 +512,11 @@ export default function ChapterSelection({ route }) {
           <View style={styles.grid}>{chapterButtons}</View>
         </ScrollView>
       )}
-      <Modal
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View
-              style={{
-                width: "100%",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingTop: 18,
-                paddingRight: 18,
-              }}
-            >
-              <View
-                style={{ flexDirection: "row", alignItems: "center" }}
-              ></View>
-              <Pressable
-                style={{ justifyContent: "center" }}
-                onPress={() => {
-                  setModalVisible(false);
-                }}
-              >
-                <MaterialIcons
-                  name="close"
-                  size={30}
-                  color="gray"
-                ></MaterialIcons>
-              </Pressable>
-            </View>
-            <View
-              style={{
-                width: "100%",
-                paddingBottom: 18,
-                paddingHorizontal: 18,
-              }}
-            >
-              <View
-                style={{
-                  alignItems: "center",
-                  width: "100%",
-                }}
-              >
-                <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-                  Premium Subscription
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginTop: 20,
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <Text style={{ fontSize: 40, fontWeight: "bold" }}>
-                    $5.99
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      fontWeight: "bold",
-                      paddingBottom: 4,
-                    }}
-                  >
-                    /mo
-                  </Text>
-                </View>
-                <View style={{ paddingTop: 28, paddingBottom: 28 }}>
-                  <TouchableOpacity
-                    onPress={handleMonthlyPurchase}
-                    style={{
-                      borderWidth: 1,
-                      alignItems: "center",
-                      paddingVertical: 12,
-                      paddingHorizontal: 24,
-                      borderRadius: 4,
-                      borderColor: "#1B572F",
-                      elevation: 1,
-                      backgroundColor: "white",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 18,
-                        color: "#1B572F",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Subscribe
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View>
-                  <Text style={{ fontSize: 18, padding: 12 }}>
-                    The monthly subscription of{" "}
-                    <Text style={{ color: "#1B572F", fontWeight: "bold" }}>
-                      Calvin's Latin Bible
-                    </Text>{" "}
-                    includes access to the Latin audio and text of all books of
-                    the Bible as they are released.{"\n\n"} Currently available:
-                    {"\n\n"}
-                    <Ionicons name="checkmark" size={18} color="black" />{" "}
-                    <Text style={{ paddingLeft: 4 }}>Mark</Text>
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <SubscriptionModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        subscribed={false}
+      />
     </View>
   );
 }
@@ -676,26 +556,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     paddingVertical: 10,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 50,
-    marginBottom: 200,
-    backgroundColor: "white",
-    borderRadius: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
   },
 });
