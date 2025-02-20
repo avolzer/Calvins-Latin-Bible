@@ -29,6 +29,7 @@ export default function Reader({ route }) {
     outputRange: [0, 50], // Output range smoothens the response
     extrapolate: "clamp", // Ensure values don't exceed the specified range
   });
+
   const navigation = useNavigation();
   const { t } = useTranslation();
 
@@ -44,19 +45,24 @@ export default function Reader({ route }) {
   const superFontSize = Math.floor(fontSize * 0.6);
 
   const superScript = {
-    textAlignVertical: "top",
     fontSize: superFontSize,
-    lineHeight: parseInt(fontSize + fontSize * 1.2, 10),
+    lineHeight: fontSize * 1.8,
     paddingRight: 10,
   };
 
   const regular = {
-    textAlignVertical: "bottom",
     fontSize: fontSize,
-    lineHeight: parseInt(fontSize + fontSize * 1.2, 10),
+    lineHeight: fontSize * 1.8,
   };
 
-  const curChap = LatinPsalms[chapter - 1];
+  useEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToIndex({
+        index: chapter - 1,
+        animated: false, // Avoid flickering during rotation
+      });
+    }
+  }, [width]);
 
   const getLatintext = (ch) => {
     var verses = "";
@@ -92,42 +98,54 @@ export default function Reader({ route }) {
   };
   const getESVtext = (ch) => {
     const curChap = ESVpsalms.filter((verse) => verse.chapter == ch);
-    var verses = [];
 
-    curChap.forEach((verse) => {
-      var text = verse.text
-        .replace("§", "\n")
-        .replaceAll("¶", "\n")
-        .replaceAll("→", "\t\t");
-      if (verse.verse == "1") {
-        if (text.startsWith("<subheading>")) {
-          text = text.substring(text.lastIndexOf("</subheading>") + 13);
-        }
-        text = text.trimStart();
-      }
-      verses.push(text);
-    });
     return curChap.map((verse) => {
+      var subheading = "";
+
       var text = verse.text
         .replace("§", "\n")
         .replace("¶", "")
         .replaceAll("¶", "\n")
-        .replaceAll("→", "\t\t");
-      if (verse.verse == "1") {
-        if (text.startsWith("<subheading>")) {
-          text = text.substring(text.lastIndexOf("</subheading>") + 13);
+        .replaceAll("→", "    ");
+
+      if (text.startsWith("<subheading>")) {
+        if (verse.verse != "1") {
+          subheading = text.substring(
+            text.indexOf("<subheading>") + 12,
+            text.lastIndexOf("</subheading>")
+          );
         }
+
+        text = text.substring(text.lastIndexOf("</subheading>") + 13);
+        text = text.trimStart();
+      }
+      if (verse.verse == "1") {
         text = text.trimStart();
       }
       var newParagraph = false;
       if (text.startsWith("\n")) newParagraph = true;
+      if (verse.verse == 18 && chapter == 119)
+        console.log(JSON.stringify(text));
 
       return (
-        <View style={{ flexDirection: "row" }} key={verse.passage}>
-          <Text style={superScript}>
-            {newParagraph ? `\n${verse.verse}` : verse.verse}
-          </Text>
-          <Text style={regular}>{text}</Text>
+        <View>
+          {subheading ? (
+            <Text
+              style={[regular, { fontStyle: "italic", paddingVertical: 12 }]}
+            >
+              {subheading}
+            </Text>
+          ) : (
+            <></>
+          )}
+          <View style={{ flexDirection: "row" }} key={verse.passage}>
+            <Text style={superScript}>
+              {newParagraph ? `\n${verse.verse}` : verse.verse}
+            </Text>
+            <Text style={[regular, { flexWrap: "wrap", alignSelf: "stretch" }]}>
+              {text}
+            </Text>
+          </View>
         </View>
       );
     });
@@ -198,14 +216,19 @@ export default function Reader({ route }) {
                   : removeLongmarks(chapter.chapterLatin)}
               </Text>
               {chapter.superscription && (
-                <Text style={{ fontSize: fontSize, fontStyle: "italic" }}>
+                <Text
+                  style={{
+                    fontSize: fontSize,
+                    fontStyle: "italic",
+                  }}
+                >
                   {showLongmarks
                     ? chapter.superscription
                     : removeLongmarks(chapter.superscription)}
                 </Text>
               )}
             </View>
-            <View style={{ paddingRight: 20, width: "100%" }}>
+            <View style={{ paddingRight: 20, width: "100%", paddingTop: 12 }}>
               {getLatintext(chapter)}
             </View>
           </ScrollView>
@@ -221,7 +244,12 @@ export default function Reader({ route }) {
                 <>
                   <Text style={styles.chapterNum}>Psalm {chapter.chapter}</Text>
                   {getESVsubheading(chapter.chapter) && (
-                    <Text style={{ fontSize: fontSize, fontStyle: "italic" }}>
+                    <Text
+                      style={{
+                        fontSize: fontSize,
+                        fontStyle: "italic",
+                      }}
+                    >
                       {getESVsubheading(chapter.chapter)}
                     </Text>
                   )}
@@ -231,14 +259,19 @@ export default function Reader({ route }) {
                   <Text style={styles.chapterNum}>{chapter.chapter}</Text>
 
                   {getKJVsubHeading(chapter.chapter) && (
-                    <Text style={{ fontSize: fontSize, fontStyle: "italic" }}>
+                    <Text
+                      style={{
+                        fontSize: fontSize,
+                        fontStyle: "italic",
+                      }}
+                    >
                       {getKJVsubHeading(chapter.chapter)}
                     </Text>
                   )}
                 </>
               )}
             </View>
-            <View style={{ paddingRight: 20, width: "100%" }}>
+            <View style={{ paddingRight: 20, width: "100%", paddingTop: 12 }}>
               {translation === "ESV"
                 ? getESVtext(chapter.chapter)
                 : getKJVtext(chapter.chapter)}

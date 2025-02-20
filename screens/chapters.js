@@ -105,6 +105,69 @@ export default function ChapterSelection({ route }) {
       chap: ch,
     });
   };
+  const ChapterGrid = ({}) => {
+    const [containerWidth, setContainerWidth] = useState(0);
+
+    const fontSize = 20;
+    const baseButtonWidth =
+      settings.appLanguage == "en" ? fontSize * 3 : fontSize * 5;
+    const spacing = 12;
+
+    const maxColumns =
+      containerWidth > 0
+        ? Math.floor(containerWidth / (baseButtonWidth + spacing))
+        : 5;
+
+    const buttonWidth =
+      containerWidth > 0
+        ? (containerWidth - spacing * (maxColumns - 1)) / maxColumns
+        : baseButtonWidth;
+
+    return (
+      <View
+        style={{
+          width: "100%",
+          flexWrap: "wrap",
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+        onLayout={(event) => setContainerWidth(event.nativeEvent.layout.width)}
+      >
+        {chapters.map((item, index) => (
+          <View
+            key={index}
+            style={{
+              width: buttonWidth,
+              alignItems: "center",
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                paddingVertical: spacing * 1.5,
+                alignItems: "center",
+                width: "100%",
+              }}
+              onPress={() => pressHandler(item)}
+            >
+              <Text
+                style={{
+                  fontSize,
+                  textAlign: "center",
+                  color: currentChapter == item ? "#1B572F" : "black",
+                  fontWeight: currentChapter == item ? "bold" : "normal",
+                }}
+              >
+                {settings.appLanguage == "English" ||
+                settings.appLanguage == "en"
+                  ? item
+                  : romanizeNumeral(item)}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+    );
+  };
 
   let chapterButtons = chapters.map((item, index) => {
     return (
@@ -367,7 +430,7 @@ export default function ChapterSelection({ route }) {
         </View>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.grid}>{chapterButtons}</View>
+          <ChapterGrid />
         </ScrollView>
       )}
     </View>
