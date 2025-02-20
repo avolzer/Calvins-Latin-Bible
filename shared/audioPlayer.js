@@ -13,6 +13,18 @@ export default function MyPlayer(props) {
   initializeApp(firebaseConfig);
 
   const [url, setUrl] = useState();
+  const [state, setState] = useState({
+    isPlaying: false,
+    playbackInstance: null,
+    currentIndex: 0,
+    isBuffering: false,
+    isLoaded: false,
+    reachedEnd: false,
+    durationMillis: 1,
+    positionMillis: 0,
+    sliderValue: 0,
+    isSeeking: false,
+  });
 
   useEffect(() => {
     const getAudio = async () => {
@@ -39,19 +51,6 @@ export default function MyPlayer(props) {
     clearInterval(intervalId);
     getAudio();
   }, [props.chapter]);
-
-  const [state, setState] = useState({
-    isPlaying: false,
-    playbackInstance: null,
-    currentIndex: 0,
-    isBuffering: false,
-    isLoaded: false,
-    reachedEnd: false,
-    durationMillis: 1,
-    positionMillis: 0,
-    sliderValue: 0,
-    isSeeking: false,
-  });
 
   const intervalRef = useRef();
   const [sequence, setSequence] = useState(0);
@@ -112,7 +111,7 @@ export default function MyPlayer(props) {
       const status = await playbackInstance.getStatusAsync();
 
       const recordingEnded =
-        status.positionMillis >= status.playableDurationMillis;
+        status.positionMillis >= status.playableDurationMillis - 50;
 
       if (recordingEnded) {
         clearInterval(intervalRef.current);
